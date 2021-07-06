@@ -51,18 +51,17 @@ array = [
     ('Llamada','Llamada'),
     ('Correo Electronico','Correo Electronico'),
     ('Visito Segupak','Visito Segupak'),
-    ('Otra..','Otra..'),
 ]
 array1 = [ 
     ('Habitual','Habitual'),
     ('Dejo de Comprar','Dejo de Comprar'),
     ('En gestion de compra','En gestion de compra'),
-    ('Otra..','Otra..'),
+    ('Casual','Casual'),
 ]
 array2 = [ 
     ('Precio','Precio'),
     ('Producto Faltante','Producto Faltante'),
-    ('Otra..','Otra..'),
+    
 ]
 array3 = [ 
     ('Si','Si'),
@@ -74,21 +73,36 @@ array4 = [
     ('FILM','FILM'),
     ('FLEJES','FLEJES'),
     ('POF','POF'),
+    ('Otro..','Otro..'),
 ]
 array5 = [ 
     ('Cintas S.A.','Cintas S.A.'),
     ('FONDO ESTRELLA S.A.','FONDO ESTRELLA S.A.'),
     ('PARPACK S.A','PARPACK S.A.'),
-    ('Otra..','Otra..'),
+    ('Otro..','Otro..'),
+
 ]
 array7 = [ 
     ('Si','Si'),
     ('No','No'),
 ]
+array9 = [
+    ('Si','Si'),
+    ('No','No'),
+    ('Cotizacion','Cotizacion'),
+]
+
+
+
+# class Seleccion4Form(forms.Form):
+#     seleccion4 = forms.CharField(required=True,label='Compra algún producto de la competencia?', widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion5'}, choices = array4))
+#     otros = forms.CharField(required=False,label='Otra...', widget=forms.Textarea(attrs = {'class' : 'form-control', 'id':'validacion7', 'cols' : 10, 'rows': 1}))
+
 class FormulariosForm(forms.Form):
     seleccion = forms.CharField(label='Por qué medio te contactaste?', required = True, widget = forms.RadioSelect(attrs={'name':'iCheck', 'id':'validacion1'}, choices=array))
     seleccion1 = forms.CharField(label='Tipo de Cliente', required = True, widget = forms.RadioSelect(attrs={'name':'iCheck', 'id':'validacion2'}, choices = array1))
     seleccion2 = forms.CharField(label='Por qué dejó de comprar?', required = True, widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion3'}, choices = array2))
+    seleccion10 = forms.CharField(label='Cerraste alguna venta?', required= True, widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion9'}, choices = array9))
     seleccion3 = forms.CharField(label='Realizó un pedido?', required = True, widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion4'}, choices = array3))
     seleccion4 = forms.CharField(label='Compra algún producto de la competencia?', widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion5'}, choices = array4))
     seleccion5 = forms.CharField(label='De quién compra?', required = True, widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion6'},choices = array5))
@@ -98,7 +112,7 @@ class FormulariosForm(forms.Form):
 
 class SelectForm(forms.Form):
     # seleccion9 = forms.IntegerField(label= 'Clientes',widget= forms.SelectMultiple(choices = []))
-    seleccion9 = forms.CharField(label= 'Clientes',widget= forms.SelectMultiple(choices = []))
+    seleccion9 = forms.CharField(label= 'Clientes',widget= forms.Select(choices = [], attrs={'class': 'form-select form-select-lg mb-3'}))
     def __init__(self, *args, **kwargs):
         
         self.usuario = kwargs.pop('id_usuario')
@@ -116,17 +130,22 @@ class SelectForm(forms.Form):
             'res.partner',
             'search_read', # Buscar y leer
             [[['salesman_actual', '=', self.usuario], ['company_type', '=', 'company']]], # Condición
-            {'fields': ['name', 'id'],} # Campos que va a traer
+            {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
         )
         return contenido_odoo
 
     #combierte lo que recibio de la base de datos a formato para el choice
+    
     def seleccion_odoo(self):
         datos_odoo = self.leer
         seleccion_clientes = list()
 
         for i in datos_odoo:
-            seleccion_clientes.append((str(i.get('name')), str(i.get('name'))))
+            if i.get('name') != False:
+                print('a')
+                seleccion_clientes.append((str(i.get('name')), str(i.get('name'))))
+            else:
+                pass
 
         return seleccion_clientes
 

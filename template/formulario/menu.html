@@ -22,7 +22,7 @@
                 margin-top: 40px;
             }
             .navbar {
-                background-color: #424242 !important;
+                background-color: black !important;
             }
             span{
                 color: white !important;
@@ -41,33 +41,32 @@
     <body>
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
-              <span class="navbar-brand mb-0 h1">Contacto Clientes</span>
-              <form  method="POST" class="form-inline my-2 my-lg-0">
-                {% csrf_token %}                            
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name= "cerrar sesion" value="Cerrar Sesion">Cerrar Sesion</button>
+              <span class="navbar-brand sm-0 h1">Contacto Clientes</span>
+              <form  method="POST" class="form-inline my-2 my-lg-1">
+                {% csrf_token %}    
+                {{nombre_usuario}}
+                <button class="btn btn-outline-danger btn-sm" type="submit" name= "cerrar sesion" value="Cerrar Sesion">Cerrar Sesion</button>
             </form>
             </div>
         </nav>
 
         <div class="container-sm">
             <br>
-
-
-
- 
             {% if messages %}
                 {% for message in messages %}
                     <div class="row justify-content-sm-center">
                         <div class="alert alert-success justify-content-sm-center" role="alert">
-                            El formulario a sido enviado
+                            El formulario ha sido enviado
                         </div>
                     </div>
                 {% endfor %}
             {% endif %}
             <div class="row justify-content-sm-center">
-                <div class="col-sm-auto">
+                <div class="col-sm-auto"></div>
+                <div class="d-flex justify-content-center">
                     <a href="{% url 'formulario' %}" class="btn btn-success"role="button">Ingresar Formulario</a>
                 </div>
+                <div class="col-sm-auto"></div>
             </div>
         </div>
     </body>

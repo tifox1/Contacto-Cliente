@@ -55,20 +55,20 @@
             .navbar-brand {
                 color: white !important;
             }
+            p{
+                font-size: 10px;
+            }
         </style>
     </head>
     <body>
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
-              <span class="navbar-brand mb-0 h1">Contacto Clientes</span>
-                <form method="POST" class="form-inline my-2 my-lg-0">
-                    <div class="container_sm">
-                        <div class=""></div>
-                    </div>
-                    {% csrf_token %}         
-                     -->
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name= "cerrar sesion" value="Cerrar Sesion">Cerrar Sesion</button>
-                </form>
+              <span class="navbar-brand sm-0 h1">Contacto Clientes</span>
+              <form  method="POST" class="form-inline my-2 my-lg-1">
+                {% csrf_token %}    
+                {{nombre_usuario}}
+                <button class="btn btn-outline-danger btn-sm" type="submit" name= "cerrar sesion" value="Cerrar Sesion">Cerrar Sesion</button>
+            </form>
             </div>
         </nav>
 
@@ -77,18 +77,30 @@
         <div class="container-sm">
 
             <form method="POST">
-                    {% for i in form %}
-                        <div class="row">
-                            {% csrf_token %}   
-                            {{i.errors}}                         
-                            {{i.label}}
-                            {{i}}
-                        </div>
-                    {% endfor %}
+                <div class="row">
+                    {{select_form.as_p}}
+                </div>
 
+                {% for i in form %}
                     <div class="row">
-                        {{select_form.as_p}}
+                        {% csrf_token %}   
+                        {{i.errors}}                         
+                        {{i.label}}
+                        {{i}}
                     </div>
+                {% endfor %}
+
+
+                    <!-- <div class="row">
+                        {{seleccion4.seleccion4.label_tag}}
+                        {{seleccion4.seleccion4.errors}}
+                        {{seleccion4.seleccion4.0}}
+                        {{seleccion4.seleccion4.1}}
+                        {{seleccion4.seleccion4.2}}
+                        {{seleccion4.seleccion4.3}}
+                        {{seleccion4.seleccion4.4}} {{seleccion4.otros}}
+
+                    </div> -->
 
                     <div class="col">
                         <button type="submit" id="submitbutton" class="btn btn-success btn-lg" >Enviar</button>

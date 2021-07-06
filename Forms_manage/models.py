@@ -40,6 +40,7 @@ class FormulariosModel(models.Model):
     login_client = models.CharField('Nombre del vendedor',null=True, max_length=120)
     # selle_name = models.CharField('Nombre del Vendedor',null=True, max_length=120)
     contact = models.CharField('Por qué medio te contactaste?', max_length=120, null= True)
+    closed_sells = models.CharField('Cerraste alguna venta?', max_length=120, null= True)
     client_type = models.CharField('Tipo de Cliente', max_length=80, null= True)
     stop_selling = models.CharField('Por qué dejó de comprar?', max_length=80, null= True)
     order = models.CharField('Realizó un pedido?', max_length=50, null= True)

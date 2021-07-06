@@ -4,6 +4,7 @@ from django.http import request
 from django.shortcuts import redirect, render
 from django.core import serializers
 from django.contrib import messages
+import pytz
 from xmlrpc import client
 from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
@@ -115,6 +116,7 @@ def FormulariosView(request):
             datos_select = SelectForm(request.POST, id_usuario = request.session.get('id'))
             datos = FormulariosForm(request.POST)
             
+            
 
             if datos.is_valid() and datos_select.is_valid():
                
@@ -129,6 +131,7 @@ def FormulariosView(request):
                 my_model.sample = datos.cleaned_data.get('seleccion7')
                 my_model.comment = datos.cleaned_data.get('seleccion8')
                 my_model.id_cliente = datos_select.cleaned_data.get('seleccion9')
+                my_model.closed_sells = datos.cleaned_data.get('seleccion10')
                 my_model.login_client = request.session['username']
                 
                 
@@ -153,9 +156,12 @@ def FormulariosView(request):
                         'product_details' : datos.cleaned_data.get('seleccion6'),
                         'sample' : datos.cleaned_data.get('seleccion7'),
                         'comment' : datos.cleaned_data.get('seleccion8'),
-                        'partner_name': datos_select.cleaned_data.get('seleccion9'),                     
+                        'partner_name': datos_select.cleaned_data.get('seleccion9'),  
+                        'cerraste_venta' : datos.cleaned_data.get('seleccion10'),  
+                        'salesman_name' : request.session['username'],           
                         # 'partner_id': int(request.session['id']),
-                        'fecha_hora' : datetime.now()
+                        # 'fecha_hora' : pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone('America/Asuncion'))
+                        'fecha_hora' : datetime.utcnow()
                     }]
                 )
                 return redirect('menu')  
@@ -174,8 +180,9 @@ def FormulariosView(request):
     select_form = SelectForm(id_usuario = request.session.get('id'))
     data = {
         'form' : FormulariosForm,
+        # 'seleccion4': Seleccion4Form,
         'select_form' : select_form,
-        'nombre_usuario' : request.session['username']
+        'nombre_usuario' : request.session['username'],
     }
 
     return render(request, 'formulario/forms.html', data)

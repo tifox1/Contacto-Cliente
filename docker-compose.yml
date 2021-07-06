@@ -1,0 +1,32 @@
+version: "3.3"
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=3142
+    volumes:
+        - "dbdata:/var/lib/postgresql/data"
+    restart: always
+    networks:
+        formulario:
+  web:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+        formulario:
+networks:
+  formulario:
+
+volumes:
+  dbdata:

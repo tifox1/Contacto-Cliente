@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'FormulariosDjangoV5.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "A2",
+        'NAME': "postgres",
         "USER":"postgres",
         "PASSWORD":"3142",
-        "HOST":"127.0.0.1",
+        "HOST":"db",
         "DATABASE_PORT":"5432",
     }
 }
@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Asuncion'
 
 USE_I18N = True
 
