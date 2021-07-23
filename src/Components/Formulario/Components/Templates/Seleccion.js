@@ -1,0 +1,33 @@
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
+import React, { useState } from 'react'
+import Caja from './Caja'
+
+const Seleccion = (props) => {
+    const [value, setValue] = useState('')
+    const handleChange = (e) => {
+        setValue(e.target.value)
+    }
+
+    return(<>
+        <Caja title={props.title}>
+            <FormControl variant="filled" fullWidth>
+                <InputLabel
+                    htmlFor="filled-age-native-simple">
+                    Seleccionar
+                </InputLabel>
+                <Select value={value} onChange={handleChange}>{
+                    props.options.map(option => {
+                        return (
+                            <MenuItem
+                                value={option[0]}>
+                                {option[1]}
+                            </MenuItem>
+                        )
+                    })
+                }</Select>
+            </FormControl>
+        </Caja>
+    </>)
+}
+
+export default Seleccion
