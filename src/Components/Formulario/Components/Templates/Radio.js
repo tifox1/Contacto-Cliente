@@ -61,8 +61,10 @@ const RadioSeleccion = (props) => {
                                 name={props.otherName}
                                 value={props.otherValue}
                                 onChange={props.onChange}
+                                error={props.otherError}
                             />
                         </FormControl>
+                        <FormHelperText error>{props.otherError}</FormHelperText>
                     </Collapse>
                 </Grid>
             </Grid>

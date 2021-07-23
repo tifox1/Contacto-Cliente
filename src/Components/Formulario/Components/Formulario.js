@@ -52,6 +52,14 @@ const Formulario = () => {
             tipoContacto: Yup.string().required('Ingrese medio de contacto'),
             tipoCliente: Yup.string().required('Ingrese tipo de cliente'),
             cerrasteVenta: Yup.string().required('Ingrese si cerró una venta'),
+            otherComproProducto: Yup.string().when('comproProducto', {
+                is: 'other',
+                then: Yup.string().required('Especifique otro producto')
+            }),
+            otherQuienCompra: Yup.string().when('quienCompra', {
+                is: 'other',
+                then: Yup.string().required('Especifique otro proveedor')
+            })
         })
     })
 
@@ -128,6 +136,7 @@ const Formulario = () => {
                     renderOther={true}
                     otherName="otherComproProducto"
                     otherValue={formik.values.otherComproProducto}
+                    otherError={formik.errors.otherComproProducto}
                     name="comproProducto"
                     value={formik.values.comproProducto}
                     onChange={formik.handleChange}
@@ -141,6 +150,7 @@ const Formulario = () => {
                     renderOther={true}
                     otherName="otherQuienCompra"
                     otherValue={formik.values.otherQuienCompra}
+                    otherError={formik.errors.otherQuienCompra}
                     name="quienCompra"
                     value={formik.values.quienCompra}
                     onChange={formik.handleChange}
