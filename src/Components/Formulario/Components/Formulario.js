@@ -31,9 +31,19 @@ const Formulario = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    clientes: value.clientes,
-                    tipocliente: value.tipocliente,
-                    cerrasteventa: value.cerrasteventa,
+                    contact: value.tipoContacto,
+                    client_type: value.tipoCliente,
+                    stop_selling: value.motDejoComprar,
+                    order: value.cerrasteVenta,
+                    seller_name: value.quienCompra,
+                    product_details: value.detProducto,
+                    sample: value.muestra,
+                    comment: value.comentarios,
+                    id_cliente: value.clientes,
+                    closed_sells: value.cerrasteVenta,
+                    competition: value.comproProducto,
+                    other_seller: value.otherQuienCompra,
+                    other_competition: value.otherComproProducto
                 })
             })
         },
