@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@material-ui/core'
 import React, { useState } from 'react'
 import Caja from './Caja'
 
@@ -17,6 +17,7 @@ const Seleccion = (props) => {
                 </InputLabel>
                 <Select value={props.value}
                         name={props.name}
+                        error={props.error}
                         onChange={props.onChange}>{
                     props.options.map(option => {
                         return (
@@ -28,6 +29,7 @@ const Seleccion = (props) => {
                         )
                     })
                 }</Select>
+                <FormHelperText error>{props.errorText}</FormHelperText>
             </FormControl>
         </Caja>
     </>)

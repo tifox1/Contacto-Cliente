@@ -24,7 +24,7 @@ const Formulario = () => {
             otherQuienCompra: '',
         },
         onSubmit: value => {
-            console.log(value)
+            alert(JSON.stringify(value))
             fetch('http://0.0.0.0:8000/api/usuarioread', {
                 method: 'POST',
                 headers: {
@@ -37,24 +37,29 @@ const Formulario = () => {
                 })
             })
         },
-        // validationSchema: Yup.object({
-        //     clientes: Yup.string().required(''),
-        //     tipocliente: Yup.string().required(''),
-        //     cerrasteventa: Yup.string().required(''),
-        // })
+        validationSchema: Yup.object({
+            clientes: Yup.string().required('Ingrese el cliente'),
+            tipoContacto: Yup.string().required('Ingrese medio de contacto'),
+            tipoCliente: Yup.string().required('Ingrese tipo de cliente'),
+            cerrasteVenta: Yup.string().required('Ingrese si cerró una venta'),
+        })
     })
 
     return(
         <form onSubmit={formik.handleSubmit}>
             <Grid container component={Box} padding={1}>
                 <Seleccion title="Cliente"
+                    helperText="Incorrect entry."
                     options={[
                         ['0', 'cero'],
                         ['1', 'uno']
                     ]}
                     name="clientes"
-                    value={formik.values.clientes}
-                    onChange={formik.handleChange}/>
+                    value={formik.errors.clientes}
+                    onChange={formik.handleChange}
+                    error={formik.errors.clientes}
+                    errorText={formik.errors.clientes}
+                    />
                 <RadioSeleccion title="¿Por qué medio contactaste?"
                     options={[
                         ['Visita al Cliente','Visita al Cliente'],
@@ -66,6 +71,8 @@ const Formulario = () => {
                     name="tipoContacto"
                     value={formik.values.tipoContacto}
                     onChange={formik.handleChange}
+                    error={formik.errors.tipoContacto}
+                    errorText={formik.errors.tipoContacto}
                 />
                 <RadioSeleccion title="Tipo de cliente"
                     options={[
@@ -77,6 +84,8 @@ const Formulario = () => {
                     name="tipoCliente"
                     value={formik.values.tipoCliente}
                     onChange={formik.handleChange}
+                    error={formik.errors.tipoCliente}
+                    errorText={formik.errors.tipoCliente}
                 />
                 <RadioSeleccion title="¿Porqué dejó de comprar?"
                     options={[
@@ -96,6 +105,8 @@ const Formulario = () => {
                     name="cerrasteVenta"
                     value={formik.values.cerrasteVenta}
                     onChange={formik.handleChange}
+                    error={formik.errors.cerrasteVenta}
+                    errorText={formik.errors.cerrasteVenta}
                 />
                 <RadioSeleccion title="Compró algún producto de la competencia?"
                     options={[

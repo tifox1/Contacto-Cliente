@@ -1,6 +1,7 @@
 import {
     FormControl,
     FormControlLabel,
+    FormHelperText,
     Grid,
     Radio,
     RadioGroup,
@@ -29,7 +30,8 @@ const RadioSeleccion = (props) => {
                         <RadioGroup
                             value={props.value}
                             onChange={props.onChange}
-                            name={props.name}>
+                            name={props.name}
+                            error={props.error}>
                             {props.options.map(option => {
                                     return(
                                         <FormControlLabel
@@ -47,6 +49,7 @@ const RadioSeleccion = (props) => {
                                     label="Otro..."/>
                             }
                         </RadioGroup>
+                        <FormHelperText error>{props.errorText}</FormHelperText>
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
