@@ -5,7 +5,6 @@ import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
-// import { useFormik } from 'formik'
 
 const Formulario = () => {
     const formik = useFormik({

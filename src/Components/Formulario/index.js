@@ -1,15 +1,9 @@
-import React, { Component, useState } from 'react'
-import { Formik, useFormik } from 'formik';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { alpha, makeStyles, ThemeProvider,createTheme } from '@material-ui/core/styles';
-import { green, purple } from '@material-ui/core/colors';
+import { makeStyles, ThemeProvider,createTheme } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
-import Seleccion from './Components/Templates/Seleccion';
-import RadioSeleccion from './Components/Templates/Radio';
-import CampoTexto from './Components/Templates/CampoTexto';
-import { Box, Grid } from '@material-ui/core';
 import Formulario from './Components/Formulario';
 
 const useStyles = makeStyles((theme) => ({
