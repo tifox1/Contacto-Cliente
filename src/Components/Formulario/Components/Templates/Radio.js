@@ -7,30 +7,33 @@ import {
     TextField
 } from '@material-ui/core'
 import Collapse from '@material-ui/core/Collapse'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Caja from './Caja'
 
 const RadioSeleccion = (props) => {
-    const [value, setValue] = useState('')
     const [other, setOther] = useState(false)
-    const handleChange = (e) => {
-        setValue(e.target.value)
-        if (e.target.value === 'other') {
+
+    useEffect(() => {
+        if (props.value === 'other'){
             setOther(true)
-        } else{
+        } else {
             setOther(false)
         }
-    }
+    }, [props.value])
 
     return(
         <Caja title={props.title}>
             <Grid container>
                 <Grid item xs={12}>
                     <FormControl>
-                        <RadioGroup value={value} onChange={handleChange}>
+                        <RadioGroup
+                            value={props.value}
+                            onChange={props.onChange}
+                            name={props.name}>
                             {props.options.map(option => {
                                     return(
                                         <FormControlLabel
+                                            key={props.options.indexOf(option)}
                                             value={option[0]}
                                             control={<Radio />}
                                             label={option[1]}/>
@@ -49,7 +52,13 @@ const RadioSeleccion = (props) => {
                 <Grid item xs={12}>
                     <Collapse in={other}>
                         <FormControl fullWidth>
-                            <TextField label="Especificar" variant="filled"/>
+                            <TextField
+                                label="Especificar"
+                                variant="filled"
+                                name={props.otherName}
+                                value={props.otherValue}
+                                onChange={props.onChange}
+                            />
                         </FormControl>
                     </Collapse>
                 </Grid>

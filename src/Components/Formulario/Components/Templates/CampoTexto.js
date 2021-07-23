@@ -6,7 +6,14 @@ const CampoTexto = (props) => {
     return(
         <Caja title={props.title}>
             <FormControl fullWidth>
-                <TextField label="Respuesta" variant="filled" multiline={true}/>
+                <TextField
+                    label="Respuesta"
+                    variant="filled"
+                    multiline={true}
+                    name={props.name}
+                    value={props.value}
+                    onChange={props.onChange}
+                />
             </FormControl>
         </Caja>
     )

@@ -15,10 +15,13 @@ const Seleccion = (props) => {
                     htmlFor="filled-age-native-simple">
                     Seleccionar
                 </InputLabel>
-                <Select value={value} onChange={handleChange}>{
+                <Select value={props.value}
+                        name={props.name}
+                        onChange={props.onChange}>{
                     props.options.map(option => {
                         return (
                             <MenuItem
+                                key={props.options.indexOf(option)}
                                 value={option[0]}>
                                 {option[1]}
                             </MenuItem>

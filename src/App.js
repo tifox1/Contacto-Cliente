@@ -1,11 +1,11 @@
 // import reactDom from 'react-dom';
 // import './App.css';
-import Formulario from "./Components/Formulario/index.js"
+import FormView from "./Components/Formulario/index.js"
 
 import { CssBaseline } from '@material-ui/core';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
       type: 'dark',
   },
@@ -15,7 +15,7 @@ function App() {
   return(
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Formulario/>
+      <FormView/>
     </ThemeProvider>
   );
 }
