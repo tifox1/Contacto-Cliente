@@ -91,16 +91,43 @@
                 {% endfor %}
 
 
-                    <!-- <div class="row">
-                        {{seleccion4.seleccion4.label_tag}}
-                        {{seleccion4.seleccion4.errors}}
-                        {{seleccion4.seleccion4.0}}
-                        {{seleccion4.seleccion4.1}}
-                        {{seleccion4.seleccion4.2}}
-                        {{seleccion4.seleccion4.3}}
-                        {{seleccion4.seleccion4.4}} {{seleccion4.otros}}
-
-                    </div> -->
+                    <div class="row">
+                        Compra algún producto de la competencia?
+                        <ul>
+                            <li>
+                              <label class="radiobutton">
+                                <input name="opc" value="Cintas" type="radio">
+                                <span class="label-text">Cintas</span>
+                              </label>
+                            </li>
+                            <li>
+                              <label class="radiobutton">
+                                <input name="opc" value="FILM" type="radio">
+                                <span class="label-text">FILM</span>
+                              </label>
+                            </li>
+                            <li>
+                              <label class="radiobutton">
+                                <input name="opc" value="FLEJES" type="radio">
+                                <span class="label-text">FLEJES</span>
+                              </label>
+                            </li>
+                            <li>
+                              <label class="radiobutton">
+                                <input name="opc" value="POF" type="radio">
+                                <span class="label-text">POF</span>
+                              </label>
+                            </li>
+                            <li>
+                                <label class="radiobutton">
+                                  <input name="opc" value="Otro.." type="radio">
+                                  <span class="label-text">Otro..</span>
+                                  <input type="text">
+                                </label>
+                            </li>
+                          </ul>
+                          
+                    </div>
 
                     <div class="col">
                         <button type="submit" id="submitbutton" class="btn btn-success btn-lg" >Enviar</button>

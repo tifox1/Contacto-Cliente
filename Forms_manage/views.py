@@ -1,15 +1,18 @@
-from django.contrib.auth.models import User
+
 from datetime import datetime
 from django.http import request
 from django.shortcuts import redirect, render
-from django.core import serializers
 from django.contrib import messages
-import pytz
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import exception_handler
+
 from xmlrpc import client
 from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
+from .serializers import UsuarioSerializer
 
-
+import logging
 
 # Credenciales servidor
 #   TODO: poner las variables en un archivo de configuración aparte (archivo .ini)
@@ -26,15 +29,43 @@ uid = common.authenticate(db_odoo, user, password, {})
 prox = client.ServerProxy('http://%s:%s/xmlrpc/2/object' % (srv, port))
 var_global = {'success' : False} 
 
+_logger = logging.getLogger(__name__)
+
 def consulta_odoo():
     resultado = prox.execute_kw(
         db_odoo, uid, password,
         'res.users',
         'search_read', # Buscar y leer
         [[]], # Condición
-        {'fields': ['login','id'],} # Campos que va a traer
+          {'fields': ['login','id'],} # Campos que va a traer
     )
     return resultado
+
+
+@api_view(['POST'])
+def login(request):
+    print(request.method == 'POST')
+    if request.method == 'POST':
+        datos = UsuarioSerializer(data=request.data)
+        
+        if datos.is_valid():
+            print('if 2')
+            usuario_query = UsuariosModel.objects.filter(usuario= datos.data['usuario'], contrasenia=datos.data['contrasenia'])
+            # response = exception_handler()
+
+            contenido_odoo = consulta_odoo()
+            if usuario_query.exists():
+
+                for i in contenido_odoo:
+                    print(i.get('login'))
+                    print(str(datos.data['usuario']))
+                    if str(datos.data['usuario']) == str(i.get('login')):
+                        resultado = datos.data['usuario']
+                        print('procesado')
+                        print(resultado)
+                        
+                        return Response(resultado)
+    return Response(status=405)
 
 def LoginViews(request):
     request.session['sesion_inactiva'] = True
@@ -63,8 +94,8 @@ def LoginViews(request):
                             request.session['id'] = i.get('id')
                             request.session['sesion_activa'] = True
                             del request.session['sesion_inactiva'] 
-                            print(request.session['username'])
-                            print(request.session['id'])
+                            # print(request.session['username'])
+                            # print(request.session['id'])
 
                             return redirect('menu')
 
@@ -115,17 +146,24 @@ def FormulariosView(request):
 
             datos_select = SelectForm(request.POST, id_usuario = request.session.get('id'))
             datos = FormulariosForm(request.POST)
+            seleccion4form= Seleccion4Form(request.POST)
             
             
 
-            if datos.is_valid() and datos_select.is_valid():
-               
+            if datos.is_valid() and datos_select.is_valid() and seleccion4form.is_valid():
+
+                if request.POST ['seleccion4'] == 'Otro..':
+                    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+                    my_model.comment=seleccion4form.cleaned_data.get('otros')
+                else:
+                    my_model.comment = seleccion4form.cleaned_data.get('seleccion4')
+
                 query = consulta_odoo()  
                 my_model.contact = datos.cleaned_data.get('seleccion')
                 my_model.client_type = datos.cleaned_data.get('seleccion1')
                 my_model.stop_selling = datos.cleaned_data.get('seleccion2')
                 my_model.order = datos.cleaned_data.get('seleccion3')
-                my_model.competition = datos.cleaned_data.get('seleccion4')
+                # my_model.competition = seleccion4form.cleaned_data.get('seleccion4')
                 my_model.seller_name = datos.cleaned_data.get('seleccion5')
                 my_model.product_details = datos.cleaned_data.get('seleccion6')
                 my_model.sample = datos.cleaned_data.get('seleccion7')
@@ -142,7 +180,7 @@ def FormulariosView(request):
                 my_model.save() 
 
                 messages.success(request, 'Formulario enviado')
-                print(datos_select.cleaned_data.get('seleccion9'))
+                # print(datos_select.cleaned_data.get('seleccion9'))
                 prox.execute_kw(
                     db_odoo, uid, password, # Credenciales
                     'contacto.cliente', # Modelo odoo
@@ -151,7 +189,7 @@ def FormulariosView(request):
                         'client_type' : datos.cleaned_data.get('seleccion1'),
                         'stop_selling': datos.cleaned_data.get('seleccion2'),
                         'order': datos.cleaned_data.get('seleccion3'),
-                        'competition' : datos.cleaned_data.get('seleccion4'),
+                        'competition' : seleccion4form.cleaned_data.get('seleccion4'),
                         'seller_name' : datos.cleaned_data.get('seleccion5'),
                         'product_details' : datos.cleaned_data.get('seleccion6'),
                         'sample' : datos.cleaned_data.get('seleccion7'),

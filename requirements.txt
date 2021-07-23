@@ -1,4 +1,6 @@
 Django==3.2.4
 psycopg2-binary==2.8.6
 django-bootstrap-v5==1.0.4
+djangorestframework==3.12.4
+
 

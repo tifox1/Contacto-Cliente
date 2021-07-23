@@ -93,11 +93,6 @@ array9 = [
 ]
 
 
-
-# class Seleccion4Form(forms.Form):
-#     seleccion4 = forms.CharField(required=True,label='Compra algún producto de la competencia?', widget = forms.RadioSelect(attrs = {'name':'iCheck', 'id':'validacion5'}, choices = array4))
-#     otros = forms.CharField(required=False,label='Otra...', widget=forms.Textarea(attrs = {'class' : 'form-control', 'id':'validacion7', 'cols' : 10, 'rows': 1}))
-
 class FormulariosForm(forms.Form):
     seleccion = forms.CharField(label='Por qué medio te contactaste?', required = True, widget = forms.RadioSelect(attrs={'name':'iCheck', 'id':'validacion1'}, choices=array))
     seleccion1 = forms.CharField(label='Tipo de Cliente', required = True, widget = forms.RadioSelect(attrs={'name':'iCheck', 'id':'validacion2'}, choices = array1))
@@ -119,7 +114,7 @@ class SelectForm(forms.Form):
         self.leer = self.leer_odoo()
         super().__init__(*args, **kwargs)
         self.fields['seleccion9'].widget.choices = self.seleccion_odoo()
-        pprint(self.seleccion_odoo)
+        print(self.seleccion_odoo)
         # self.fields['seleccion9'].widget.choices = self.fields['seleccion9'].widget.choices.order_by('name')
 
     #trae los registros de la base de datos
@@ -142,7 +137,7 @@ class SelectForm(forms.Form):
 
         for i in datos_odoo:
             if i.get('name') != False:
-                print('a')
+                
                 seleccion_clientes.append((str(i.get('name')), str(i.get('name'))))
             else:
                 pass
