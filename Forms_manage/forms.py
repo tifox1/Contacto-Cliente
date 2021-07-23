@@ -138,7 +138,7 @@ class SelectForm(forms.Form):
         for i in datos_odoo:
             if i.get('name') != False:
                 
-                seleccion_clientes.append((str(i.get('name')), str(i.get('name'))))
+                seleccion_clientes.append([str(i.get('name')), str(i.get('name'))])
             else:
                 pass
 

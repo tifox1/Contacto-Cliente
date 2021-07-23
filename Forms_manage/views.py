@@ -10,7 +10,7 @@ from rest_framework.views import exception_handler
 from xmlrpc import client
 from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
-from .serializers import UsuarioSerializer
+from .serializers import UsuarioSerializer, FormularioSerializer
 
 import logging
 
@@ -41,6 +41,31 @@ def consulta_odoo():
     )
     return resultado
 
+def leer_odoo(usuario):
+
+    contenido_odoo = prox.execute_kw(
+        db_odoo, uid, password,
+        'res.partner',
+        'search_read', # Buscar y leer
+        [[['salesman_actual', '=', ], ['company_type', '=', 'company']]], # Condición
+        {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
+    )
+    return contenido_odoo
+
+    #combierte lo que recibio de la base de datos a formato para el choice
+    
+def seleccion_odoo():
+    datos_odoo = leer_odoo()
+    seleccion_clientes = list()
+
+    for i in datos_odoo:
+        if i.get('name') != False:
+            
+            seleccion_clientes.append([str(i.get('name')), str(i.get('name'))])
+        else:
+            pass
+
+    return seleccion_clientes
 
 @api_view(['POST'])
 def login(request):
@@ -60,135 +85,112 @@ def login(request):
                     print(i.get('login'))
                     print(str(datos.data['usuario']))
                     if str(datos.data['usuario']) == str(i.get('login')):
-                        resultado = datos.data['usuario']
-                        print('procesado')
-                        print(resultado)
+                        usuario = datos.data['usuario']
+                        id_usuario = i.get('id')
                         
-                        return Response(resultado)
+                        return Response({'usuario': usuario, 'id_usuario': id_usuario})
     return Response(status=405)
 
-def LoginViews(request):
-    request.session['sesion_inactiva'] = True
-    data = {
-        'form' : LoginForm 
-    }
-    if 'sesion_inactiva' in request.session:
+# def LoginViews(request):
+#     request.session['sesion_inactiva'] = True
+#     data = {
+#         'form' : LoginForm 
+#     }
+#     if 'sesion_inactiva' in request.session:
 
-        #verificamos el tipo de peticion
-        if request.method == 'POST':
-            datos = LoginForm(request.POST)
+#         #verificamos el tipo de peticion
+#         if request.method == 'POST':
+#             datos = LoginForm(request.POST)
 
-            #verifica si todos los datos son validos
-            if datos.is_valid():
-                usuario_query = UsuariosModel.objects.filter(usuario= datos.cleaned_data.get('usuario'), contrasenia=datos.cleaned_data.get('contrasenia'))
+#             #verifica si todos los datos son validos
+#             if datos.is_valid():
+#                 usuario_query = UsuariosModel.objects.filter(usuario= datos.cleaned_data.get('usuario'), contrasenia=datos.cleaned_data.get('contrasenia'))
                 
-                #trae todos los registros en una lista con arrays
-                contenido_odoo = consulta_odoo()
-                if usuario_query.exists():
+#                 #trae todos los registros en una lista con arrays
+#                 contenido_odoo = consulta_odoo()
+#                 if usuario_query.exists():
 
-                    #recorre todos los registros y valida si coinciden con los datos introducidos desde el forms, en el caso de que sea valida la condicion, se guarda en una session 
-                    for i in contenido_odoo:   
+#                     #recorre todos los registros y valida si coinciden con los datos introducidos desde el forms, en el caso de que sea valida la condicion, se guarda en una session 
+#                     for i in contenido_odoo:   
 
-                        if str(datos.cleaned_data.get('usuario')) == str(i.get('login')):
-                            request.session['username'] = i.get('login')
-                            request.session['id'] = i.get('id')
-                            request.session['sesion_activa'] = True
-                            del request.session['sesion_inactiva'] 
-                            # print(request.session['username'])
-                            # print(request.session['id'])
+#                         if str(datos.cleaned_data.get('usuario')) == str(i.get('login')):
+#                             request.session['username'] = i.get('login')
+#                             request.session['id'] = i.get('id')
+#                             request.session['sesion_activa'] = True
+#                             del request.session['sesion_inactiva'] 
+#                             # print(request.session['username'])
+#                             # print(request.session['id'])
 
-                            return redirect('menu')
+#                             return redirect('menu')
 
-                        else: 
-                            pass        
-    else:
-        redirect('menu')
+#                         else: 
+#                             pass        
+#     else:
+#         redirect('menu')
 
-    return render(request, 'formulario/login.html', data)
-
-
+#     return render(request, 'formulario/login.html', data)
 
 
-def MenuView(request):
-    global var_global
-    data = dict()
+
+
+# def MenuView(request):
+#     global var_global
+#     data = dict()
     
-    if 'sesion_activa' in request.session:
+#     if 'sesion_activa' in request.session:
 
-        data={
+#         data={
             
-            'nombre_usuario' : request.session['username']
-        }
-        if request.POST.get('cerrar sesion'):
-            request.session['sesion_inactiva'] = True
-            del request.session['sesion_activa']
-            del request.session['username']
-            del request.session['id']
+#             'nombre_usuario' : request.session['username']
+#         }
+#         if request.POST.get('cerrar sesion'):
+#             request.session['sesion_inactiva'] = True
+#             del request.session['sesion_activa']
+#             del request.session['username']
+#             del request.session['id']
 
-            return redirect('login')
+#             return redirect('login')
 
-        return render(request, 'formulario/menu.html', data)
+#         return render(request, 'formulario/menu.html', data)
 
-    else:
-        return redirect('login')
-
-
+#     else:
+#         return redirect('login')
 
 
-def FormulariosView(request):
-    global var_global
-    
-    if 'sesion_activa' in request.session:
+api_view(['POST'])
+def formulario(request):
+    my_model = FormulariosModel()
 
-        my_model = FormulariosModel()
-    
-        if request.method == 'POST':
+    if request.method == 'POST':
+        datos = FormularioSerializer(data=request.data)
 
-            datos_select = SelectForm(request.POST, id_usuario = request.session.get('id'))
-            datos = FormulariosForm(request.POST)
-            seleccion4form= Seleccion4Form(request.POST)
-            
-            
-
-            if datos.is_valid() and datos_select.is_valid() and seleccion4form.is_valid():
-
-                if request.POST ['seleccion4'] == 'Otro..':
-                    print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-                    my_model.comment=seleccion4form.cleaned_data.get('otros')
+        if datos.is_valid:
+                my_model.contact = datos.data['contact']
+                my_model.client_type = datos.data['client_type']
+                my_model.stop_selling = datos.data['stop_selling']
+                my_model.order = datos.data['order']
+                my_model.seller_name = datos.data['seller_name']
+                my_model.product_details = datos.data['product_details']
+                my_model.sample = datos.data['sample']
+                my_model.comment = datos.data['comment']
+                my_model.id_cliente = datos.data['id_cliente']
+                my_model.closed_sells = datos.data['closed_sells']
+                
+                if datos.datos['competition'] == 'other':
+                    my_model.competition = datos.data['other_competition']
+                    
                 else:
-                    my_model.comment = seleccion4form.cleaned_data.get('seleccion4')
+                    my_model.competition = datos.data['competition']
+                my_model.save()
 
-                query = consulta_odoo()  
-                my_model.contact = datos.cleaned_data.get('seleccion')
-                my_model.client_type = datos.cleaned_data.get('seleccion1')
-                my_model.stop_selling = datos.cleaned_data.get('seleccion2')
-                my_model.order = datos.cleaned_data.get('seleccion3')
-                # my_model.competition = seleccion4form.cleaned_data.get('seleccion4')
-                my_model.seller_name = datos.cleaned_data.get('seleccion5')
-                my_model.product_details = datos.cleaned_data.get('seleccion6')
-                my_model.sample = datos.cleaned_data.get('seleccion7')
-                my_model.comment = datos.cleaned_data.get('seleccion8')
-                my_model.id_cliente = datos_select.cleaned_data.get('seleccion9')
-                my_model.closed_sells = datos.cleaned_data.get('seleccion10')
-                my_model.login_client = request.session['username']
-                
-                
-                for i in query:
-                    if i.get('id') is datos_select.cleaned_data.get('seleccion9'):
-                        my_model.login_client = i.get('login')
-
-                my_model.save() 
-
-                messages.success(request, 'Formulario enviado')
-                # print(datos_select.cleaned_data.get('seleccion9'))
                 prox.execute_kw(
                     db_odoo, uid, password, # Credenciales
                     'contacto.cliente', # Modelo odoo
                     'create', [{ # Crear: [{campos del modelo a crear}]
-                        'contact': datos.cleaned_data.get('seleccion'),
-                        'client_type' : datos.cleaned_data.get('seleccion1'),
-                        'stop_selling': datos.cleaned_data.get('seleccion2'),
-                        'order': datos.cleaned_data.get('seleccion3'),
+                        'contact': datos.data['contact'],
+                        'client_type' : datos.data['client_type'],
+                        'stop_selling': datos.data['stop_selling'],
+                        'order': datos.data['order'],
                         'competition' : seleccion4form.cleaned_data.get('seleccion4'),
                         'seller_name' : datos.cleaned_data.get('seleccion5'),
                         'product_details' : datos.cleaned_data.get('seleccion6'),
@@ -202,7 +204,75 @@ def FormulariosView(request):
                         'fecha_hora' : datetime.utcnow()
                     }]
                 )
-                return redirect('menu')  
+    
+
+# def FormulariosView(request):
+    
+    
+#     if 'sesion_activa' in request.session:
+
+#         my_model = FormulariosModel()
+    
+#         if request.method == 'POST':
+
+#             datos_select = SelectForm(request.POST, id_usuario = request.session.get('id'))
+#             datos = FormulariosForm(request.POST)
+#             seleccion4form= Seleccion4Form(request.POST)
+            
+            
+
+#             if datos.is_valid() and datos_select.is_valid() and seleccion4form.is_valid():
+
+#                 if request.POST ['seleccion4'] == 'Otro..':
+#                     my_model.comment=seleccion4form.cleaned_data.get('otros')
+#                 else:
+#                     my_model.comment = seleccion4form.cleaned_data.get('seleccion4')
+
+#                 query = consulta_odoo()  
+#                 my_model.contact = datos.cleaned_data.get('seleccion')
+#                 my_model.client_type = datos.cleaned_data.get('seleccion1')
+#                 my_model.stop_selling = datos.cleaned_data.get('seleccion2')
+#                 my_model.order = datos.cleaned_data.get('seleccion3')
+#                 # my_model.competition = seleccion4form.cleaned_data.get('seleccion4')
+#                 my_model.seller_name = datos.cleaned_data.get('seleccion5')
+#                 my_model.product_details = datos.cleaned_data.get('seleccion6')
+#                 my_model.sample = datos.cleaned_data.get('seleccion7')
+#                 my_model.comment = datos.cleaned_data.get('seleccion8')
+#                 my_model.id_cliente = datos_select.cleaned_data.get('seleccion9')
+#                 my_model.closed_sells = datos.cleaned_data.get('seleccion10')
+#                 my_model.login_client = request.session['username']
+                
+                
+#                 for i in query:
+#                     if i.get('id') is datos_select.cleaned_data.get('seleccion9'):
+#                         my_model.login_client = i.get('login')
+
+#                 my_model.save() 
+
+#                 messages.success(request, 'Formulario enviado')
+#                 # print(datos_select.cleaned_data.get('seleccion9'))
+                # prox.execute_kw(
+                #     db_odoo, uid, password, # Credenciales
+                #     'contacto.cliente', # Modelo odoo
+                #     'create', [{ # Crear: [{campos del modelo a crear}]
+                #         'contact': datos.cleaned_data.get('seleccion'),
+                #         'client_type' : datos.cleaned_data.get('seleccion1'),
+                #         'stop_selling': datos.cleaned_data.get('seleccion2'),
+                #         'order': datos.cleaned_data.get('seleccion3'),
+                #         'competition' : seleccion4form.cleaned_data.get('seleccion4'),
+                #         'seller_name' : datos.cleaned_data.get('seleccion5'),
+                #         'product_details' : datos.cleaned_data.get('seleccion6'),
+                #         'sample' : datos.cleaned_data.get('seleccion7'),
+                #         'comment' : datos.cleaned_data.get('seleccion8'),
+                #         'partner_name': datos_select.cleaned_data.get('seleccion9'),  
+                #         'cerraste_venta' : datos.cleaned_data.get('seleccion10'),  
+                #         'salesman_name' : request.session['username'],           
+                #         # 'partner_id': int(request.session['id']),
+                #         # 'fecha_hora' : pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone('America/Asuncion'))
+                #         'fecha_hora' : datetime.utcnow()
+                #     }]
+                # )
+#                 return redirect('menu')  
 
         if request.POST.get('cerrar sesion'):
             request.session['sesion_inactiva'] = True   

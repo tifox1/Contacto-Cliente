@@ -38,7 +38,6 @@ class FormulariosModel(models.Model):
     #     return select_choices
     id_cliente = models.TextField('Nombre del Cliente', null=True)
     login_client = models.CharField('Nombre del vendedor',null=True, max_length=120)
-    # selle_name = models.CharField('Nombre del Vendedor',null=True, max_length=120)
     contact = models.CharField('Por qué medio te contactaste?', max_length=120, null= True)
     closed_sells = models.CharField('Cerraste alguna venta?', max_length=120, null= True)
     client_type = models.CharField('Tipo de Cliente', max_length=80, null= True)
