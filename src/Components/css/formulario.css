@@ -1,0 +1,36 @@
+
+ul {
+    list-style-type: none;
+}
+.row{
+    border-radius: 15px;
+    background-color: #424242;
+    margin-top: 1%;
+    padding: 15px;
+}
+.col{
+    margin:1%;
+}
+textarea{
+    background-color: #899593 !important;
+    text-shadow: 0px 0px 0px #000;
+    -webkit-text-fill-color: transparent;
+    outline: none;
+}
+textarea:focus{
+    border: 3px solid #72747a !important;
+    box-shadow: 0 0 10px #72747a;
+    outline: none;
+}
+input[type=radio] label{
+    margin: 0px 20px 0px 3px;
+}
+.navbar {
+    background-color: black !important;
+}
+.navbar-brand {
+    color: white !important;
+}
+p{
+    font-size: 10px;
+}
