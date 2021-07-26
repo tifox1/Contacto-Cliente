@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { TouchAppRounded } from '@material-ui/icons';
 import Cookies from 'universal-cookie';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,15 +52,14 @@ const theme = createTheme({
 const Menu = () => {
     const classes = useStyles()
     const cookies = new Cookies()
-    const [sesion,setSesion] = useState(true) 
+    const [sesion,setSesion] = useState(true)
+    const history = useHistory()
     const onClick= () =>{
         cookies.remove('usuario')
-        setSesion(false)
+        history.push('/login')
     }
     return (
         <div>
-            {sesion ? null : <Redirect to='/login'/>}
-
             <AppBar className={classes.root} position="static">
                 <Toolbar>
 

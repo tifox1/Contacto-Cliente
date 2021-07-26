@@ -14,6 +14,7 @@ import FormControl from '@material-ui/core/FormControl';
 import { green, red } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import { useHistory } from "react-router";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -48,15 +49,15 @@ const Login = () => {
     const classes = useStyles();
     
     const [valido, setValido] = useState(false)
+    const cookies = new Cookies()
+    const history = useHistory();
     const formik = useFormik({
-        
         initialValues: {
             usuario: '',
             contrasenia: '',
         },
         onSubmit: value => {
-            
-            fetch('http://0.0.0.0:8000/api/usuariovalidacion/', {
+            fetch('http://192.168.100.190:8000/api/usuariovalidacion/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,28 +68,16 @@ const Login = () => {
                 })
             }).then(response => {
                 if (response.ok){
-                    setValido(true)
                     console.log(response.json)
                     return response.json()
                 }
             }).then(data => {
-                const cookies = new Cookies()
                 cookies.set('usuario', data, {path: '/'})
-                cookies.set('session', true, {path:'/'})
-                // console.log(cookies.get('usuario'))
+                history.push('/')
             })
         },
-        // validationSchema: Yup.object({
-            // 	clientes : Yup.string().required(''),
-            // 	tipocliente : Yup.string().required(''),
-            // 	cerrasteventa : Yup.string().required(''),
-            // })
-            
-        })
-        
-        return (
-        <>
-        {valido ? <Redirect to="/menu"/>:<Redirect to="/login"/>}
+    })
+    return (<>
         <div>
             <AppBar className={classes.root} position="static">
                 <Toolbar>
@@ -135,7 +124,10 @@ const Login = () => {
                                         justify="center"
                                         xs={12}>
                                         <ThemeProvider size="small" theme={theme}>
-                                            <Button variant="contained" color="primary" type="submit" className={classes.margin}>
+                                            <Button variant="contained"
+                                                    color="primary"
+                                                    type="submit"
+                                                    className={classes.margin}>
                                                 Enviar
                                             </Button>
                                         </ThemeProvider>
@@ -148,7 +140,6 @@ const Login = () => {
                 </Grid>
             </form>
         </div>
-    </>
-    )
+    </>)
 }
 export default Login

@@ -5,6 +5,9 @@ import { makeStyles, ThemeProvider,createTheme } from '@material-ui/core/styles'
 import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import Formulario from './Components/Formulario';
+import { useEffect, useState } from 'react';
+import Cookies from 'universal-cookie';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,6 +38,37 @@ const theme = createTheme({
 
 const FormView = () => {
     const classes = useStyles();
+    const [clientes, setClientes] = useState([])
+    const history = useHistory();
+    const cookies = new Cookies()
+
+    const handleClick = () => {
+        cookies.remove('usuario')
+        history.push('/login')
+    }
+    useEffect(() => {
+        const cookies = new Cookies();
+        if (!cookies.get('usuario')) {
+            history.push('/login')
+        } else {
+            history.push('/')
+        }
+        fetch('http://192.168.100.190:8000/api/session/', {
+            method: 'POST',
+            body: JSON.stringify(
+                cookies.get('usuario'),
+            ),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            if (response.ok) {
+                return response.json()
+            }
+        }).then(data => {
+            setClientes(data.clientes)
+        })
+    }, [])
 
     return(<>
         <AppBar className={classes.root} position="static">
@@ -43,13 +77,13 @@ const FormView = () => {
                     Contacto Clientes
                 </Typography>
                 <ThemeProvider theme={theme}>
-                <Button variant="contained" color="primary" className={classes.margin}>
+                <Button variant="contained" color="primary" className={classes.margin} onClick={handleClick}>
                     Cerrar Sesion
                 </Button>
                 </ThemeProvider>
             </Toolbar>
         </AppBar>
-        <Formulario />
+        <Formulario clientes={clientes}/>
     </>);
 }
 

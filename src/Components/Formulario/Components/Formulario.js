@@ -1,12 +1,13 @@
-import { Box, Button, Grid } from '@material-ui/core'
+import { Box, Button, Grid, TextField } from '@material-ui/core'
 import { useFormik } from 'formik'
 import React from 'react'
 import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
-const Formulario = () => {
+const Formulario = (props) => {
     const formik = useFormik({
         initialValues: {
             clientes: '',
@@ -24,7 +25,7 @@ const Formulario = () => {
         },
         onSubmit: value => {
             alert(JSON.stringify(value))
-            fetch('http://0.0.0.0:8000/api/usuarioread', {
+            fetch('http://192.168.100.190:8000/api/formulario/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -67,16 +68,17 @@ const Formulario = () => {
             <Grid container component={Box} padding={1}>
                 <Seleccion title="Cliente"
                     helperText="Incorrect entry."
-                    options={[
-                        ['0', 'cero'],
-                        ['1', 'uno']
-                    ]}
+                    options={props.clientes}
                     name="clientes"
                     value={formik.errors.clientes}
                     onChange={formik.handleChange}
                     error={formik.errors.clientes}
                     errorText={formik.errors.clientes}
-                    />
+                />
+                {/* <Autocomplete
+                    options={props.clientes}
+                    renderInput={(params) => <TextField {...params}}
+                /> */}
                 <RadioSeleccion title="¿Por qué medio contactaste?"
                     options={[
                         ['Visita al Cliente','Visita al Cliente'],
