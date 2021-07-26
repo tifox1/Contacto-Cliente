@@ -11,3 +11,5 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = UsuariosModel
         fields = ('usuario', 'contrasenia')
         
+class SessionSerializer(serializers.Serializer):
+    id_usuario = serializers.IntegerField()

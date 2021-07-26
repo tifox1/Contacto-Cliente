@@ -10,7 +10,7 @@ from rest_framework.views import exception_handler
 from xmlrpc import client
 from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
-from .serializers import UsuarioSerializer, FormularioSerializer
+from .serializers import UsuarioSerializer, FormularioSerializer, SessionSerializer
 
 import logging
 
@@ -47,7 +47,7 @@ def leer_odoo(usuario):
         db_odoo, uid, password,
         'res.partner',
         'search_read', # Buscar y leer
-        [[['salesman_actual', '=', ], ['company_type', '=', 'company']]], # Condición
+        [[['salesman_actual', '=', usuario], ['company_type', '=', 'company']]], # Condición
         {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
     )
     return contenido_odoo
@@ -91,70 +91,6 @@ def login(request):
                         return Response({'usuario': usuario, 'id_usuario': id_usuario})
     return Response(status=405)
 
-# def LoginViews(request):
-#     request.session['sesion_inactiva'] = True
-#     data = {
-#         'form' : LoginForm 
-#     }
-#     if 'sesion_inactiva' in request.session:
-
-#         #verificamos el tipo de peticion
-#         if request.method == 'POST':
-#             datos = LoginForm(request.POST)
-
-#             #verifica si todos los datos son validos
-#             if datos.is_valid():
-#                 usuario_query = UsuariosModel.objects.filter(usuario= datos.cleaned_data.get('usuario'), contrasenia=datos.cleaned_data.get('contrasenia'))
-                
-#                 #trae todos los registros en una lista con arrays
-#                 contenido_odoo = consulta_odoo()
-#                 if usuario_query.exists():
-
-#                     #recorre todos los registros y valida si coinciden con los datos introducidos desde el forms, en el caso de que sea valida la condicion, se guarda en una session 
-#                     for i in contenido_odoo:   
-
-#                         if str(datos.cleaned_data.get('usuario')) == str(i.get('login')):
-#                             request.session['username'] = i.get('login')
-#                             request.session['id'] = i.get('id')
-#                             request.session['sesion_activa'] = True
-#                             del request.session['sesion_inactiva'] 
-#                             # print(request.session['username'])
-#                             # print(request.session['id'])
-
-#                             return redirect('menu')
-
-#                         else: 
-#                             pass        
-#     else:
-#         redirect('menu')
-
-#     return render(request, 'formulario/login.html', data)
-
-
-
-
-# def MenuView(request):
-#     global var_global
-#     data = dict()
-    
-#     if 'sesion_activa' in request.session:
-
-#         data={
-            
-#             'nombre_usuario' : request.session['username']
-#         }
-#         if request.POST.get('cerrar sesion'):
-#             request.session['sesion_inactiva'] = True
-#             del request.session['sesion_activa']
-#             del request.session['username']
-#             del request.session['id']
-
-#             return redirect('login')
-
-#         return render(request, 'formulario/menu.html', data)
-
-#     else:
-#         return redirect('login')
 
 
 api_view(['POST'])
@@ -178,7 +114,7 @@ def formulario(request):
                 
                 if datos.datos['competition'] == 'other':
                     my_model.competition = datos.data['other_competition']
-                    
+
                 else:
                     my_model.competition = datos.data['competition']
                 my_model.save()
@@ -191,19 +127,28 @@ def formulario(request):
                         'client_type' : datos.data['client_type'],
                         'stop_selling': datos.data['stop_selling'],
                         'order': datos.data['order'],
-                        'competition' : seleccion4form.cleaned_data.get('seleccion4'),
-                        'seller_name' : datos.cleaned_data.get('seleccion5'),
-                        'product_details' : datos.cleaned_data.get('seleccion6'),
-                        'sample' : datos.cleaned_data.get('seleccion7'),
-                        'comment' : datos.cleaned_data.get('seleccion8'),
-                        'partner_name': datos_select.cleaned_data.get('seleccion9'),  
-                        'cerraste_venta' : datos.cleaned_data.get('seleccion10'),  
-                        'salesman_name' : request.session['username'],           
+                        'competition' : datos.data['order'],
+                        'seller_name' : datos.data['seller_name'],
+                        'product_details' : datos.data['product_details'],
+                        'sample' : datos.data['sample'],
+                        'comment' : datos.data['comment'],
+                        'partner_name': datos.data['id_cliente'],  
+                        'cerraste_venta' : datos.data['closed_sells'],  
+                        'salesman_name' : datos.data[''],           
                         # 'partner_id': int(request.session['id']),
                         # 'fecha_hora' : pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone('America/Asuncion'))
                         'fecha_hora' : datetime.utcnow()
                     }]
                 )
+    return Response()
+
+@api_view(['POST'])
+def session(request):
+    dato = SessionSerializer(data = request.data)
+    if dato.is_valid():
+        id_usuario = dato.data['id_usuario']
+        leer_odoo(id_usuario)
+    return Response(seleccion_odoo())
     
 
 # def FormulariosView(request):
@@ -274,29 +219,92 @@ def formulario(request):
                 # )
 #                 return redirect('menu')  
 
-        if request.POST.get('cerrar sesion'):
-            request.session['sesion_inactiva'] = True   
-            del request.session['sesion_activa']
-            del request.session['username']
-            del request.session['id']
+    #     if request.POST.get('cerrar sesion'):
+    #         request.session['sesion_inactiva'] = True   
+    #         del request.session['sesion_activa']
+    #         del request.session['username']
+    #         del request.session['id']
 
-            return redirect('login')
+    #         return redirect('login')
 
-    else:
-        return redirect('login')
+    # else:
+    #     return redirect('login')
 
-    select_form = SelectForm(id_usuario = request.session.get('id'))
-    data = {
-        'form' : FormulariosForm,
-        # 'seleccion4': Seleccion4Form,
-        'select_form' : select_form,
-        'nombre_usuario' : request.session['username'],
-    }
+    # select_form = SelectForm(id_usuario = request.session.get('id'))
+    # data = {
+    #     'form' : FormulariosForm,
+    #     # 'seleccion4': Seleccion4Form,
+    #     'select_form' : select_form,
+    #     'nombre_usuario' : request.session['username'],
+    # }
 
-    return render(request, 'formulario/forms.html', data)
+    # return render(request, 'formulario/forms.html', data)
+
+
+# def LoginViews(request):
+#     request.session['sesion_inactiva'] = True
+#     data = {
+#         'form' : LoginForm 
+#     }
+#     if 'sesion_inactiva' in request.session:
+
+#         #verificamos el tipo de peticion
+#         if request.method == 'POST':
+#             datos = LoginForm(request.POST)
+
+#             #verifica si todos los datos son validos
+#             if datos.is_valid():
+#                 usuario_query = UsuariosModel.objects.filter(usuario= datos.cleaned_data.get('usuario'), contrasenia=datos.cleaned_data.get('contrasenia'))
+                
+#                 #trae todos los registros en una lista con arrays
+#                 contenido_odoo = consulta_odoo()
+#                 if usuario_query.exists():
+
+#                     #recorre todos los registros y valida si coinciden con los datos introducidos desde el forms, en el caso de que sea valida la condicion, se guarda en una session 
+#                     for i in contenido_odoo:   
+
+#                         if str(datos.cleaned_data.get('usuario')) == str(i.get('login')):
+#                             request.session['username'] = i.get('login')
+#                             request.session['id'] = i.get('id')
+#                             request.session['sesion_activa'] = True
+#                             del request.session['sesion_inactiva'] 
+#                             # print(request.session['username'])
+#                             # print(request.session['id'])
+
+#                             return redirect('menu')
+
+#                         else: 
+#                             pass        
+#     else:
+#         redirect('menu')
+
+#     return render(request, 'formulario/login.html', data)
 
 
 
+
+# def MenuView(request):
+#     global var_global
+#     data = dict()
+    
+#     if 'sesion_activa' in request.session:
+
+#         data={
+            
+#             'nombre_usuario' : request.session['username']
+#         }
+#         if request.POST.get('cerrar sesion'):
+#             request.session['sesion_inactiva'] = True
+#             del request.session['sesion_activa']
+#             del request.session['username']
+#             del request.session['id']
+
+#             return redirect('login')
+
+#         return render(request, 'formulario/menu.html', data)
+
+#     else:
+#         return redirect('login')
 
 
 
