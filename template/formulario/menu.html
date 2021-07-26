@@ -1,0 +1,73 @@
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	    <title>Your Website</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" integrity="undefined" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="undefined" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="undefined" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.esm.min.js" integrity="undefined" crossorigin="anonymous"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/skins/all.css" rel="stylesheet">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/iCheck/1.0.2/icheck.min.js"></script>
+        <style type="text/css">
+            body{
+                font-size: 20px;
+                background-color: #2B2B2B;
+                color: white;
+            }
+            a{
+                margin-top: 40px;
+            }
+            .navbar {
+                background-color: black !important;
+            }
+            span{
+                color: white !important;
+            }
+            .col-sm-auto{
+                float:none;
+                margin:auto !important;
+            }
+            .row{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+              <span class="navbar-brand sm-0 h1">Contacto Clientes</span>
+              <form  method="POST" class="form-inline my-2 my-lg-1">
+                {% csrf_token %}    
+                {{nombre_usuario}}
+                <button class="btn btn-outline-danger btn-sm" type="submit" name= "cerrar sesion" value="Cerrar Sesion">Cerrar Sesion</button>
+            </form>
+            </div>
+        </nav>
+
+        <div class="container-sm">
+            <br>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="row justify-content-sm-center">
+                        <div class="alert alert-success justify-content-sm-center" role="alert">
+                            El formulario ha sido enviado
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row justify-content-sm-center">
+                <div class="col-sm-auto"></div>
+                <div class="d-flex justify-content-center">
+                    <a href="{% url 'formulario' %}" class="btn btn-success"role="button">Ingresar Formulario</a>
+                </div>
+                <div class="col-sm-auto"></div>
+            </div>
+        </div>
+    </body>
+</html>
