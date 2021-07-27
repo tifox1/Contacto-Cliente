@@ -76,11 +76,9 @@ const FormView = () => {
                 <Typography className={classes.title} variant="h6" noWrap>
                     Contacto Clientes
                 </Typography>
-                <ThemeProvider theme={theme}>
-                <Button variant="contained" color="primary" className={classes.margin} onClick={handleClick}>
-                    Cerrar Sesion
+                <Button variant="contained" color="secondary" className={classes.margin} onClick={handleClick}>
+                    Cerrar Sesión
                 </Button>
-                </ThemeProvider>
             </Toolbar>
         </AppBar>
         <Formulario clientes={clientes}/>

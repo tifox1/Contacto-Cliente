@@ -67,11 +67,9 @@ const Menu = () => {
                         Contacto Clientes
                     </Typography>
 
-                    <ThemeProvider size="small" theme={theme}>
                         <Button variant="contained" color="secondary" className={classes.margin} onClick={onClick}>
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </Button>
-                    </ThemeProvider>
                 </Toolbar>
             </AppBar>
 

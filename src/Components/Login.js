@@ -11,10 +11,11 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
-import { green, red } from '@material-ui/core/colors';
+import { blue, green, red } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { useHistory } from "react-router";
+import Caja from './Templates/Caja';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,14 +37,6 @@ const useStyles = makeStyles((theme) => ({
     }
 
 }));
-
-const theme = createTheme({
-    palette: {
-        primary: green,
-        secondary: red
-    },
-});
-
 
 const Login = () => {
     const classes = useStyles();
@@ -89,54 +82,45 @@ const Login = () => {
                 </Toolbar>
             </AppBar>
             <form onSubmit={formik.handleSubmit}>
-                <Grid
-                    container
-                    xs={11}
-                    spacing={2}
-                    className={classes.divs}
-                >
-                    <Grid item
-                        alignItems="center"
-                        justify="center"
-                        xs={12}>
-                        <Paper variant="outlined">
-                            <Box padding={2}>
-                                <FormControl component="fieldset" className={classes.divs}>
-                                    <Typography>Usuario</Typography>
-                                    <TextField
-                                        name="usuario"
-                                        variant="filled"
-                                        size="medium"
-                                        onChange={formik.handleChange}
-                                    />
-                                    <Typography>Contraseña</Typography>
-                                    <TextField
-                                        name="contrasenia"
-                                        variant="filled"
-                                        size="medium"
-                                        type="password"
-                                        onChange={formik.handleChange}
-                                    />
+                <Grid container component={Box} padding={1}>
+                    <Caja title="Iniciar sesión">
+                        <Grid
+                            container
+                            component={FormControl}
+                            spacing={2}>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    name="usuario"
+                                    variant="outlined"
+                                    label="Usuario"
+                                    fullWidth
+                                    onChange={formik.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    name="contrasenia"
+                                    variant="outlined"
+                                    label="Contraseña"
+                                    type="password"
+                                    fullWidth
+                                    onChange={formik.handleChange}
+                                />
+                            </Grid>
 
-
-                                    <Grid item
-                                        alignItems="center"
-                                        justify="center"
-                                        xs={12}>
-                                        <ThemeProvider size="small" theme={theme}>
-                                            <Button variant="contained"
-                                                    color="primary"
-                                                    type="submit"
-                                                    className={classes.margin}>
-                                                Enviar
-                                            </Button>
-                                        </ThemeProvider>
-                                    </Grid>
-
-                                </FormControl>
-                            </Box>
-                        </Paper>
-                    </Grid>
+                                <Grid item
+                                    alignItems="center"
+                                    justify="center"
+                                    xs={12}>
+                                        <Button variant="contained"
+                                                type="submit"
+                                                color="primary"
+                                                className={classes.margin}>
+                                            Acceder
+                                        </Button>
+                                </Grid>
+                        </Grid>
+                    </Caja>
                 </Grid>
             </form>
         </div>

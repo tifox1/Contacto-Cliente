@@ -12,10 +12,12 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import Cookies from "universal-cookie";
 import { useEffect, useState } from "react";
+import { blue, green, red } from "@material-ui/core/colors";
 
 const theme = createTheme({
     palette: {
         type: 'dark',
+        secondary: red
     },
 })
 

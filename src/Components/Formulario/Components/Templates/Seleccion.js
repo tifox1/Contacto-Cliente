@@ -1,18 +1,21 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@material-ui/core'
-import Caja from './Caja'
+import Caja from '../../../Templates/Caja'
 
 const Seleccion = (props) => {
     return(<>
         <Caja title={props.title}>
-            <FormControl variant="filled" fullWidth>
-                <InputLabel
-                    htmlFor="filled-age-native-simple">
+            <FormControl variant="outlined" fullWidth>
+                <InputLabel id="select-label">
                     Seleccionar
                 </InputLabel>
-                <Select value={props.value}
-                        name={props.name}
-                        error={props.error}
-                        onChange={props.onChange}>{
+                <Select
+                    requred={props.requred}
+                    label="Seleccionar"
+                    labelId="select-label"
+                    value={props.value}
+                    name={props.name}
+                    error={props.error}
+                    onChange={props.onChange}>{
                     props.options.map(option => {
                         return (
                             <MenuItem

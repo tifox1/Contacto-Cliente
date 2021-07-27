@@ -1,6 +1,6 @@
 import { FormControl, TextField } from '@material-ui/core'
 import React from 'react'
-import Caja from './Caja'
+import Caja from '../../../Templates/Caja'
 
 const CampoTexto = (props) => {
     return(
@@ -8,7 +8,7 @@ const CampoTexto = (props) => {
             <FormControl fullWidth>
                 <TextField
                     label="Respuesta"
-                    variant="filled"
+                    variant="outlined"
                     multiline={true}
                     name={props.name}
                     value={props.value}

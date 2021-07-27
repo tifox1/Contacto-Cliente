@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import Collapse from '@material-ui/core/Collapse'
 import React, { useEffect, useState } from 'react'
-import Caja from './Caja'
+import Caja from '../../../Templates/Caja'
 
 const RadioSeleccion = (props) => {
     const [other, setOther] = useState(false)
@@ -57,7 +57,7 @@ const RadioSeleccion = (props) => {
                         <FormControl fullWidth>
                             <TextField
                                 label="Especificar"
-                                variant="filled"
+                                variant="outlined"
                                 name={props.otherName}
                                 value={props.otherValue}
                                 onChange={props.onChange}

@@ -5,9 +5,12 @@ import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocompletado from './Templates/Autocompletado'
+import Cookies from 'universal-cookie'
 
 const Formulario = (props) => {
+    const cookies = new Cookies()
+
     const formik = useFormik({
         initialValues: {
             clientes: '',
@@ -31,6 +34,7 @@ const Formulario = (props) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    salesman_name: cookies.get('usuario').usuario,
                     contact: value.tipoContacto,
                     client_type: value.tipoCliente,
                     stop_selling: value.motDejoComprar,
@@ -45,6 +49,10 @@ const Formulario = (props) => {
                     other_seller: value.otherQuienCompra,
                     other_competition: value.otherComproProducto
                 })
+            }).then(response => {
+                if (response.ok) {
+                    console.log('enviado')
+                }
             })
         },
         validationSchema: Yup.object({
@@ -67,17 +75,19 @@ const Formulario = (props) => {
         <form onSubmit={formik.handleSubmit}>
             <Grid container component={Box} padding={1}>
                 <Seleccion title="Cliente"
-                    helperText="Incorrect entry."
                     options={props.clientes}
                     name="clientes"
-                    value={formik.errors.clientes}
+                    value={formik.values.clientes}
                     onChange={formik.handleChange}
                     error={formik.errors.clientes}
                     errorText={formik.errors.clientes}
                 />
-                {/* <Autocomplete
+                {/* <Autocompletado
+                    name="clientes"
                     options={props.clientes}
-                    renderInput={(params) => <TextField {...params}}
+                    title="Clientes"
+                    value={formik.values.clientes}
+                    onChange={formik.setFieldValue}
                 /> */}
                 <RadioSeleccion title="¿Por qué medio contactaste?"
                     options={[
