@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
-from Forms_manage.views import MenuView, LoginViews
+
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers, views
 
@@ -25,8 +25,7 @@ from rest_framework import routers, views
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('formulario/',FormulariosView, name='formulario'),
-    path('menu/', MenuView, name='menu'),
-    path('login/', LoginViews, name='login'),
+
     path('api/', include('Forms_manage.urls'))
 ]
 urlpatterns += staticfiles_urlpatterns()

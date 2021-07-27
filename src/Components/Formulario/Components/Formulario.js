@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
-import Autocomplete from '@material-ui/lab/Autocomplete';
+
 
 const Formulario = (props) => {
     const formik = useFormik({
