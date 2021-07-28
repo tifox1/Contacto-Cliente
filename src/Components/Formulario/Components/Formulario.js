@@ -7,8 +7,7 @@ import React, { useState } from 'react'
 import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
-import Seleccion from './Templates/Seleccion'
-// import Autocompletado from './Templates/Autocompletado'
+import Autocompletado from './Templates/Autocompletado'
 import Cookies from 'universal-cookie'
 
 function Alert(props) {
@@ -17,6 +16,7 @@ function Alert(props) {
 
 const Formulario = (props) => {
     const cookies = new Cookies()
+
     const [message, setMessage] = useState(false)
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -24,6 +24,10 @@ const Formulario = (props) => {
         }
         setMessage(false)
     }
+
+    const [enviado, setEnviado] = useState(false)
+
+
     const formik = useFormik({
         initialValues: {
             clientes: '',
@@ -90,21 +94,28 @@ const Formulario = (props) => {
         <form onSubmit={formik.handleSubmit}>
             {message ? <Redirect to="/" /> : null}
             <Grid container component={Box} padding={1}>
-                <Seleccion title="Cliente"
+                {/* <Seleccion title="Cliente"
                     options={props.clientes}
                     name="clientes"
                     value={formik.values.clientes}
                     onChange={formik.handleChange}
                     error={formik.errors.clientes}
                     errorText={formik.errors.clientes}
-                />
-                {/* <Autocompletado
+                /> */}
+                <Autocompletado
+                    error={enviado && formik.errors.clientes}
                     name="clientes"
                     options={props.clientes}
-                    title="Clientes"
-                    value={formik.values.clientes}
-                    onChange={formik.setFieldValue}
-                /> */}
+                    title="Cliente"
+                    inputValue={formik.values.clientes}
+                    disableClearable
+                    onInputChange={(event, newValue) =>{
+                        formik.setFieldValue('clientes', newValue)
+                    }}
+                    onChange={(event, newValue) => {
+                        formik.setFieldValue('clientes', newValue)
+                    }}
+                />
                 <RadioSeleccion title="¿Por qué medio contactaste?"
                     options={[
                         ['Visita al Cliente', 'Visita al Cliente'],
@@ -116,8 +127,8 @@ const Formulario = (props) => {
                     name="tipoContacto"
                     value={formik.values.tipoContacto}
                     onChange={formik.handleChange}
-                    error={formik.errors.tipoContacto}
-                    errorText={formik.errors.tipoContacto}
+                    error={enviado && formik.errors.tipoContacto}
+                    errorText={enviado && formik.errors.tipoContacto}
                 />
                 <RadioSeleccion title="Tipo de cliente"
                     options={[
@@ -129,8 +140,8 @@ const Formulario = (props) => {
                     name="tipoCliente"
                     value={formik.values.tipoCliente}
                     onChange={formik.handleChange}
-                    error={formik.errors.tipoCliente}
-                    errorText={formik.errors.tipoCliente}
+                    error={enviado && formik.errors.tipoCliente}
+                    errorText={enviado && formik.errors.tipoCliente}
                 />
                 <RadioSeleccion title="¿Porqué dejó de comprar?"
                     options={[
@@ -150,8 +161,8 @@ const Formulario = (props) => {
                     name="cerrasteVenta"
                     value={formik.values.cerrasteVenta}
                     onChange={formik.handleChange}
-                    error={formik.errors.cerrasteVenta}
-                    errorText={formik.errors.cerrasteVenta}
+                    error={enviado && formik.errors.cerrasteVenta}
+                    errorText={enviado && formik.errors.cerrasteVenta}
                 />
                 <RadioSeleccion title="Compró algún producto de la competencia?"
                     options={[
@@ -163,7 +174,7 @@ const Formulario = (props) => {
                     renderOther={true}
                     otherName="otherComproProducto"
                     otherValue={formik.values.otherComproProducto}
-                    otherError={formik.errors.otherComproProducto}
+                    otherError={enviado && formik.errors.otherComproProducto}
                     name="comproProducto"
                     value={formik.values.comproProducto}
                     onChange={formik.handleChange}
@@ -177,7 +188,7 @@ const Formulario = (props) => {
                     renderOther={true}
                     otherName="otherQuienCompra"
                     otherValue={formik.values.otherQuienCompra}
-                    otherError={formik.errors.otherQuienCompra}
+                    otherError={enviado && formik.errors.otherQuienCompra}
                     name="quienCompra"
                     value={formik.values.quienCompra}
                     onChange={formik.handleChange}
@@ -204,7 +215,16 @@ const Formulario = (props) => {
                     onChange={formik.handleChange}
                 />
                 <Grid component={Box} padding={1}>
-                    <Button type="submit"  color="primary" variant="contained">Enviar</Button>
+
+                    <Button
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        onClick={
+                            () => setEnviado(true)
+                        }>
+                        Enviar
+                    </Button>
                 </Grid>
             </Grid>
 
