@@ -87,6 +87,7 @@ const Formulario = (props) => {
                     options={props.clientes}
                     title="Cliente"
                     inputValue={formik.values.clientes}
+                    disableClearable
                     onInputChange={(event, newValue) =>{
                         formik.setFieldValue('clientes', newValue)
                     }}
