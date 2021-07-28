@@ -61,12 +61,15 @@ const Login = () => {
                 })
             }).then(response => {
                 if (response.ok){
-                    console.log(response.json)
                     return response.json()
+                } else {
+                    return false
                 }
             }).then(data => {
-                cookies.set('usuario', data, {path: '/'})
-                history.push('/')
+                if (data) {
+                    cookies.set('usuario', data, {path: '/'})
+                    history.push('/')
+                }
             })
         },
     })
