@@ -110,7 +110,10 @@ const Login = () => {
                 </Typography>
             </Toolbar>
         </AppBar>
-        <Backdrop open={backdrop} style={{zIndex: 200}}>
+        <Backdrop
+            open={backdrop}
+            style={{zIndex: 200}}
+            transitionDuration={{enter: 1500}}>
             <CircularProgress color="primary" />
         </Backdrop>
         <Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
