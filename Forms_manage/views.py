@@ -102,7 +102,6 @@ def login(request):
 
 
 @api_view(['POST'])
-
 def formulario(request):
     my_model = FormulariosModel()
 
@@ -121,6 +120,7 @@ def formulario(request):
                 my_model.comment = datos.data['comment']
                 my_model.id_cliente = datos.data['id_cliente']
                 my_model.closed_sells = datos.data['closed_sells']
+                my_model.salesman_name = datos.data['salesman_name']
                 
                 if datos.data['competition'] == 'other':
                     my_model.competition = datos.data['other_competition']
