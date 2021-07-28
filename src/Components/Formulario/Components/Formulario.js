@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
-import Autocompletado from './Templates/Autocompletado'
+// import Autocompletado from './Templates/Autocompletado'
 import Cookies from 'universal-cookie'
 
 const Formulario = (props) => {

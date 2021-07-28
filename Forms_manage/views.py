@@ -3,9 +3,9 @@ from datetime import datetime
 from django.http import request
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
-from rest_framework.views import exception_handler
+
 
 from xmlrpc import client
 from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
@@ -16,9 +16,9 @@ import logging
 
 # Credenciales servidor
 #   TODO: poner las variables en un archivo de configuración aparte (archivo .ini)
-srv = '192.168.100.47'# Ruta del servidor
-port = '8787' # Puerto servidor
-db_odoo = '0130' # Nombre base de datos odoo
+srv = '192.168.100.47'  # Ruta del servidor
+port = '8787'  # Puerto servidor
+db_odoo = '0130'  # Nombre base de datos odoo
 user = 'facturacionsegupak'
 password = '12345'
 
@@ -27,55 +27,64 @@ common = client.ServerProxy('http://%s:%s/xmlrpc/2/common' % (srv, port))
 common.version()
 uid = common.authenticate(db_odoo, user, password, {})
 prox = client.ServerProxy('http://%s:%s/xmlrpc/2/object' % (srv, port))
-var_global = {'success' : False} 
+var_global = {'success': False}
 
 _logger = logging.getLogger(__name__)
+
 
 def consulta_odoo():
     resultado = prox.execute_kw(
         db_odoo, uid, password,
         'res.users',
-        'search_read', # Buscar y leer
-        [[]], # Condición
-          {'fields': ['login','id'],} # Campos que va a traer
+        'search_read',  # Buscar y leer
+        [[]],  # Condición
+          {'fields': ['login', 'id'], }  # Campos que va a traer
     )
     return resultado
+
 
 def leer_odoo(usuario):
 
     contenido_odoo = prox.execute_kw(
         db_odoo, uid, password,
         'res.partner',
-        'search_read', # Buscar y leer
-        [[['salesman_actual', '=', usuario], ['company_type', '=', 'company']]], # Condición
-        {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
+        'search_read',  # Buscar y leer
+        [[['salesman_actual', '=', usuario], [
+            'company_type', '=', 'company']]],  # Condición
+        {'fields': ['name', 'id'], 'order': 'name'}  # Campos que va a traer
     )
     return contenido_odoo
 
-    #combierte lo que recibio de la base de datos a formato para el choice
-    
-def seleccion_odoo():
-    datos_odoo = leer_odoo()
-    seleccion_clientes = list()
+    # combierte lo que recibio de la base de datos a formato para el choice
 
+
+def seleccion_odoo(usuario):
+    datos_odoo = leer_odoo(usuario)
+    seleccion_clientes = list()
+    # diccionario_resultado = dict()
+    resultado = None
     for i in datos_odoo:
         if i.get('name') != False:
-            
+
             seleccion_clientes.append([str(i.get('name')), str(i.get('name'))])
+
         else:
             pass
 
-    return seleccion_clientes
+    resultado = {'clientes': seleccion_clientes}
+    return resultado
+
 
 @api_view(['POST'])
 def login(request):
     print(request.method == 'POST')
     if request.method == 'POST':
         datos = UsuarioSerializer(data=request.data)
-        
+
         if datos.is_valid():
             print('if 2')
-            usuario_query = UsuariosModel.objects.filter(usuario= datos.data['usuario'], contrasenia=datos.data['contrasenia'])
+            usuario_query = UsuariosModel.objects.filter(
+                usuario=datos.data['usuario'], contrasenia=datos.data['contrasenia'])
             # response = exception_handler()
 
             contenido_odoo = consulta_odoo()
@@ -87,20 +96,21 @@ def login(request):
                     if str(datos.data['usuario']) == str(i.get('login')):
                         usuario = datos.data['usuario']
                         id_usuario = i.get('id')
-                        
+
                         return Response({'usuario': usuario, 'id_usuario': id_usuario})
     return Response(status=405)
 
 
+@api_view(['POST'])
 
-api_view(['POST'])
 def formulario(request):
     my_model = FormulariosModel()
 
     if request.method == 'POST':
         datos = FormularioSerializer(data=request.data)
-
-        if datos.is_valid:
+        print(datos.is_valid())
+        if datos.is_valid():
+                print(type(datos.data['client_type']))
                 my_model.contact = datos.data['contact']
                 my_model.client_type = datos.data['client_type']
                 my_model.stop_selling = datos.data['stop_selling']
@@ -112,13 +122,19 @@ def formulario(request):
                 my_model.id_cliente = datos.data['id_cliente']
                 my_model.closed_sells = datos.data['closed_sells']
                 
-                if datos.datos['competition'] == 'other':
+                if datos.data['competition'] == 'other':
                     my_model.competition = datos.data['other_competition']
 
                 else:
                     my_model.competition = datos.data['competition']
-                my_model.save()
 
+                if datos.data['seller_name'] == 'other':
+                    my_model.seller_name = datos.data['other_seller']
+                else:
+                    my_model.seller_name = datos.data['seller_name']
+
+                my_model.save()
+                print(datos.data)
                 prox.execute_kw(
                     db_odoo, uid, password, # Credenciales
                     'contacto.cliente', # Modelo odoo
@@ -134,21 +150,25 @@ def formulario(request):
                         'comment' : datos.data['comment'],
                         'partner_name': datos.data['id_cliente'],  
                         'cerraste_venta' : datos.data['closed_sells'],  
-                        'salesman_name' : datos.data[''],           
+                        'salesman_id' : datos.data['salesman_name'],           
                         # 'partner_id': int(request.session['id']),
                         # 'fecha_hora' : pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone('America/Asuncion'))
                         'fecha_hora' : datetime.utcnow()
                     }]
                 )
+        else:
+            print(datos.errors)
     return Response()
 
 @api_view(['POST'])
 def session(request):
+    resultado = None
     dato = SessionSerializer(data = request.data)
     if dato.is_valid():
         id_usuario = dato.data['id_usuario']
-        leer_odoo(id_usuario)
-    return Response(seleccion_odoo())
+        leer_odoo(usuario=id_usuario)
+        resultado=seleccion_odoo(id_usuario)
+    return Response(resultado)
     
 
 # def FormulariosView(request):
