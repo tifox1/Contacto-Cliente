@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
 import Seleccion from './Templates/Seleccion'
-// import Autocompletado from './Templates/Autocompletado'
+import Autocompletado from './Templates/Autocompletado'
 import Cookies from 'universal-cookie'
 
 const Formulario = (props) => {
@@ -74,21 +74,26 @@ const Formulario = (props) => {
     return(
         <form onSubmit={formik.handleSubmit}>
             <Grid container component={Box} padding={1}>
-                <Seleccion title="Cliente"
+                {/* <Seleccion title="Cliente"
                     options={props.clientes}
                     name="clientes"
                     value={formik.values.clientes}
                     onChange={formik.handleChange}
                     error={formik.errors.clientes}
                     errorText={formik.errors.clientes}
-                />
-                {/* <Autocompletado
+                /> */}
+                <Autocompletado
                     name="clientes"
                     options={props.clientes}
-                    title="Clientes"
-                    value={formik.values.clientes}
-                    onChange={formik.setFieldValue}
-                /> */}
+                    title="Cliente"
+                    inputValue={formik.values.clientes}
+                    onInputChange={(event, newValue) =>{
+                        formik.setFieldValue('clientes', newValue)
+                    }}
+                    onChange={(event, newValue) => {
+                        formik.setFieldValue('clientes', newValue)
+                    }}
+                />
                 <RadioSeleccion title="¿Por qué medio contactaste?"
                     options={[
                         ['Visita al Cliente','Visita al Cliente'],
