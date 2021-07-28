@@ -1,21 +1,20 @@
-import React, { Component, useState } from 'react'
-import { Redirect } from "react-router-dom";
+import React, { useState } from 'react'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Cookies from 'universal-cookie';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { alpha, makeStyles, ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
-import { blue, green, red } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { useHistory } from "react-router";
 import Caja from './Templates/Caja';
+import { FormHelperText } from '@material-ui/core';
+import { Collapse } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,10 +39,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = () => {
     const classes = useStyles();
-    
-    const [valido, setValido] = useState(false)
     const cookies = new Cookies()
     const history = useHistory();
+    const [logged, setLogged] = useState(false)
     const formik = useFormik({
         initialValues: {
             usuario: '',
@@ -72,16 +70,18 @@ const Login = () => {
                 }
             })
         },
+        validationSchema: Yup.object({
+            usuario: Yup.string().required('Ingrese usuario'),
+            contrasenia: Yup.string().required('Ingrese contraseña')
+        })
     })
     return (<>
         <div>
             <AppBar className={classes.root} position="static">
                 <Toolbar>
-
                     <Typography className={classes.title} variant="h6" noWrap>
                         Contacto Clientes
                     </Typography>
-
                 </Toolbar>
             </AppBar>
             <form onSubmit={formik.handleSubmit}>
@@ -96,9 +96,13 @@ const Login = () => {
                                     name="usuario"
                                     variant="outlined"
                                     label="Usuario"
+                                    error={logged && formik.errors.usuario}
                                     fullWidth
                                     onChange={formik.handleChange}
                                 />
+                                <Collapse in={logged && formik.errors.usuario}>
+                                    <FormHelperText error>{formik.errors.usuario}</FormHelperText>
+                                </Collapse>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
@@ -106,22 +110,26 @@ const Login = () => {
                                     variant="outlined"
                                     label="Contraseña"
                                     type="password"
+                                    error={logged && formik.errors.contrasenia}
                                     fullWidth
                                     onChange={formik.handleChange}
                                 />
+                                <Collapse in={logged && formik.errors.contrasenia}>
+                                    <FormHelperText error>{formik.errors.contrasenia}</FormHelperText>
+                                </Collapse>
                             </Grid>
-
-                                <Grid item
-                                    alignItems="center"
-                                    justify="center"
-                                    xs={12}>
-                                        <Button variant="contained"
-                                                type="submit"
-                                                color="primary"
-                                                className={classes.margin}>
-                                            Acceder
-                                        </Button>
-                                </Grid>
+                            <Grid item
+                                alignItems="center"
+                                justify="center"
+                                xs={12}>
+                                    <Button variant="contained"
+                                            type="submit"
+                                            color="primary"
+                                            className={classes.margin}
+                                            onClick={() => {setLogged(true)}}>
+                                        Acceder
+                                    </Button>
+                            </Grid>
                         </Grid>
                     </Caja>
                 </Grid>

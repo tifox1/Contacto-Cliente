@@ -1,8 +1,7 @@
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, ThemeProvider,createTheme } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Formulario from './Components/Formulario';
 import { useEffect, useState } from 'react';
@@ -29,18 +28,11 @@ const useStyles = makeStyles((theme) => ({
 
   }));
 
-const theme = createTheme({
-	palette:{
-		primary: green,
-	},
-});
-
-
 const FormView = () => {
     const classes = useStyles();
     const [clientes, setClientes] = useState([])
-    const history = useHistory();
     const cookies = new Cookies()
+    const history = useHistory();
 
     const handleClick = () => {
         cookies.remove('usuario')
@@ -68,7 +60,7 @@ const FormView = () => {
         }).then(data => {
             setClientes(data.clientes)
         })
-    }, [])
+    }, [history])
 
     return(<>
         <AppBar className={classes.root} position="static">

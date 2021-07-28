@@ -6,12 +6,16 @@ const Caja = (props) => {
         <Grid item
               xs={12} component={Box} padding={1}>
             <Paper variant="outlined">
-                <Box padding={2}>
-                    <Typography variant="h6">{
-                        props.title
-                    }</Typography>
-                    {props.children}
-                </Box>
+                <Grid container spacing={1} component={Box} padding={2}>
+                    <Grid item xs={12}>
+                        <Typography variant="h6">{
+                            props.title
+                        }</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {props.children}
+                    </Grid>
+                </Grid>
             </Paper>
         </Grid>
     </>)
