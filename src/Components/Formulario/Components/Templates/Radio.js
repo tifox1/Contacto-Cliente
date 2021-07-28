@@ -49,7 +49,11 @@ const RadioSeleccion = (props) => {
                                     label="Otro..."/>
                             }
                         </RadioGroup>
-                        <FormHelperText error>{props.errorText}</FormHelperText>
+                        <Collapse in={props.errorText}>
+                            <FormHelperText error>{
+                                props.errorText
+                            }</FormHelperText>
+                        </Collapse>
                     </FormControl>
                 </Grid>
                 <Grid item xs={12}>
@@ -64,7 +68,11 @@ const RadioSeleccion = (props) => {
                                 error={props.otherError}
                             />
                         </FormControl>
-                        <FormHelperText error>{props.otherError}</FormHelperText>
+                        <Collapse in={props.otherError}>
+                            <FormHelperText error>{
+                                props.otherError
+                            }</FormHelperText>
+                        </Collapse>
                     </Collapse>
                 </Grid>
             </Grid>

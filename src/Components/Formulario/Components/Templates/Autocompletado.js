@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from '@material-ui/core'
+import { Collapse, FormControl, FormHelperText, TextField } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
 import Caja from '../../../Templates/Caja'
 
@@ -16,8 +16,10 @@ const Autocompletado = (props) => {
                         />
                     }
                 />
-                <FormHelperText error>{props.errorText}</FormHelperText>
             </FormControl>
+            <Collapse in={props.error}>
+                <FormHelperText error>{props.error}</FormHelperText>
+            </Collapse>
         </Caja>
     </>)
 }
