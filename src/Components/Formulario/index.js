@@ -7,9 +7,8 @@ import Formulario from './Components/Formulario';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import { useHistory } from 'react-router-dom';
-import { Box, Collapse, IconButton } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Fade } from 'react-bootstrap';
 
 const useStyles = makeStyles((theme) => ({
     root: {
