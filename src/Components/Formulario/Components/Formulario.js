@@ -1,9 +1,9 @@
-import { Box, Button, Grid, TextField } from '@material-ui/core'
+import { Box, Button, Grid } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Redirect } from "react-router-dom";
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import CampoTexto from './Templates/CampoTexto'
 import RadioSeleccion from './Templates/Radio'
@@ -44,7 +44,6 @@ const Formulario = (props) => {
             otherQuienCompra: '',
         },
         onSubmit: (value, {resetForm}) => {
-            // alert(JSON.stringify(value))
             fetch('http://192.168.100.190:8000/api/formulario/', {
                 method: 'POST',
                 headers: {
@@ -70,6 +69,7 @@ const Formulario = (props) => {
                 if (response.ok) {
                     console.log('enviado')
                     resetForm()
+                    setEnviado(false)
                     setMessage(true)
                 }
             })
@@ -89,6 +89,15 @@ const Formulario = (props) => {
             })
         })
     })
+
+    useEffect(() => {
+        if (!formik.isSubmitting) return
+        if (Object.keys(formik.errors).length > 0) {
+            document.getElementsByName(
+                Object.keys(formik.errors)[0]
+            )[0].focus()
+        }
+    }, [formik])
 
     return (
         <form onSubmit={formik.handleSubmit}>

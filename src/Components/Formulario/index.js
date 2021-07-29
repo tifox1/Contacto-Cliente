@@ -7,6 +7,8 @@ import Formulario from './Components/Formulario';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import { useHistory } from 'react-router-dom';
+import { Box } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,10 +18,6 @@ const useStyles = makeStyles((theme) => ({
 
     title: {
       flexGrow: 1,
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
     },
 
     divs:{
@@ -63,17 +61,21 @@ const FormView = () => {
     }, [history])
 
     return(<>
-        <AppBar className={classes.root} position="static">
+        <AppBar className={classes.root} position="fixed">
             <Toolbar>
                 <Typography className={classes.title} variant="h6" noWrap>
                     Contacto Clientes
                 </Typography>
-                <Button variant="contained" color="secondary" className={classes.margin} onClick={handleClick}>
-                    Cerrar Sesión
+                <Button
+                    onClick={handleClick}
+                    endIcon={<ExitToAppIcon />}>
+                    {cookies.get('usuario') ? cookies.get('usuario').usuario : ''}
                 </Button>
             </Toolbar>
         </AppBar>
-        <Formulario clientes={clientes}/>
+        <Box marginTop={7} marginBottom={3}>
+            <Formulario clientes={clientes}/>
+        </Box>
     </>);
 }
 
