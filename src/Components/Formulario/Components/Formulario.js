@@ -44,7 +44,6 @@ const Formulario = (props) => {
             otherQuienCompra: '',
         },
         onSubmit: (value, {resetForm}) => {
-            // alert(JSON.stringify(value))
             fetch('http://192.168.100.190:8000/api/formulario/', {
                 method: 'POST',
                 headers: {
@@ -70,6 +69,7 @@ const Formulario = (props) => {
                 if (response.ok) {
                     console.log('enviado')
                     resetForm()
+                    setEnviado(false)
                     setMessage(true)
                 }
             })
