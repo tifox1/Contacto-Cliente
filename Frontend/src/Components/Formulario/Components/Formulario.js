@@ -44,13 +44,14 @@ const Formulario = (props) => {
             otherQuienCompra: '',
         },
         onSubmit: (value, {resetForm}) => {
-            fetch('http://192.168.100.190:8000/api/formulario/', {
+            fetch('/api/formulario/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     salesman_name: cookies.get('usuario').usuario,
+                    company: cookies.get('usuario').company,
                     contact: value.tipoContacto,
                     client_type: value.tipoCliente,
                     stop_selling: value.motDejoComprar,

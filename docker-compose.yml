@@ -1,9 +1,9 @@
-version: "3.3"
+version: "3.7"
 services:
   db:
     image: postgres:latest
     ports:
-      - "5431:5432"
+      - "5452:5432"
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -14,17 +14,41 @@ services:
     networks:
         formulario:
   web:
-    build: .
+    build: ./Backend/
     volumes:
-      - .:/code
+      - ./Backend:/code
     ports:
-      - "8000:8000"
+      - "8005:8000"
     depends_on:
       - db
     restart: always
-    command: python manage.py runserver 0.0.0.0:8000
     networks:
         formulario:
+  nginx:
+    image: nginx:latest
+    container_name: formulario_nginx
+    ports:
+      - "90:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./Frontend/build:/usr/src/app
+    restart: always
+    depends_on:
+        - web
+    networks:
+      formulario:
+  react:
+    build: ./Frontend/
+    container_name: frontend_formulario
+    ports:
+      - "3005:3000"
+    volumes:
+      - "./Frontend/public:/usr/src/app/public"
+      - "./Frontend/src:/usr/src/app/src"
+    restart: always
+    networks:
+        formulario:
+
 networks:
   formulario:
 

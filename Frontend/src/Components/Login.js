@@ -59,7 +59,7 @@ const Login = () => {
         },
         onSubmit: value => {
             setBackdrop(true)
-            fetch('http://192.168.100.190:8000/api/usuariovalidacion/', {
+            fetch('/api/usuariovalidacion/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ Frontend/coverage
 
 # production
 Frontend/build
+Backend/Froms_manage/migrations/
 
 # misc
 .DS_Store
@@ -23,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 yarn.lock
+
+*.pyc
