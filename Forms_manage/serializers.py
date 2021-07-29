@@ -12,7 +12,9 @@ class FormularioSerializer(serializers.ModelSerializer):
                   'sample', 'comment',
                   'id_cliente', 'closed_sells',
                   'competition', 'other_seller',
-                  'other_competition', 'salesman_name')
+                  'other_competition', 'salesman_name',
+                  'company'
+                  )
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
