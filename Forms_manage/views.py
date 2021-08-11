@@ -6,9 +6,8 @@ from django.contrib import messages
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 
-
+from rest_framework.views import APIView
 from xmlrpc import client
-from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
 from .serializers import UsuarioSerializer, FormularioSerializer, SessionSerializer
 
@@ -17,7 +16,7 @@ import logging
 # Credenciales servidor
 #   TODO: poner las variables en un archivo de configuración aparte (archivo .ini)
 srv = '192.168.100.47'  # Ruta del servidor
-port = '8787'  # Puerto servidor
+port = '443'  # Puerto servidor
 db_odoo = '0130'  # Nombre base de datos odoo
 user = 'facturacionsegupak'
 password = '12345'
@@ -179,6 +178,14 @@ def session(request):
         leer_odoo(usuario=id_usuario)
         resultado = seleccion_odoo(id_usuario)
     return Response(resultado)
+
+class ListHistory(APIView):
+    
+    def get(self, request):
+        datos_historial = FormulariosModel.objects.all()
+        for index in datos_historial:
+            print(index.company)
+        return Response()
 
 
 # def FormulariosView(request):
