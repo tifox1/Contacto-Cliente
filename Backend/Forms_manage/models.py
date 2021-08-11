@@ -57,7 +57,8 @@ class UsuariosModel(models.Model):
     usuario = models.CharField('Usuario',max_length=120, null=False)
     contrasenia = models.CharField('Contraseña',max_length=120, null=False)
  
-
+    def __str__(self):
+        return self.usuario
 
 
 
