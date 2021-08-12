@@ -8,23 +8,50 @@ import { useFormik } from 'formik'
 import Tabla from './Templates/Tabla'
 import HistoryIcon from '@material-ui/icons/History'
 import ItemDesp from './Templates/ItemDesp'
+import Cookies from 'universal-cookie'
 
-const ListaEnviados = (props) => {
+const ListaEnviados = () => {
+    const cookies = new Cookies()
     const formik = useFormik({
         initialValues: {
             desde: new Date(),
             hasta: new Date()
         },
         onSubmit: (res) => {
-            console.log(res.desde.toUTCString())
+            fetch('api/historial/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    usuario: cookies.get('usuario').usuario,
+                    fechaMin: res.desde.toUTCString(),
+                    fechaMax: res.hasta.toUTCString()
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
         }
     })
-    const [items, setItems] = useState([
-        {'fecha': '23/06/21', 'cliente': 'test'}
+
+    const [items] = useState([
+        {fecha: '23/06/21', cliente: 'test', respuestas: [{
+            company: 'test', 
+            salesman_name: 'test',
+            id_cliente: 'test',
+            contact: 'test',
+            client_type: 'test',
+            closed_sells: 'test',
+            stop_selling: 'test',
+            order: 'test',
+            competition: 'test',
+            seller_name: 'test',
+            product_details: 'test',
+            sample: 'test',
+            comment: 'test',
+        }]}
     ])
 
     return (<>
-        <Navegacion back="/" title="Gestiones realizadas"/>
+        <Navegacion back="/" title="Gestiones realizadas" />
         <Grid container component={Box} padding={1}>
             <Caja title="Rango" icon={DateRangeIcon}>
                 <Grid container spacing={2}>
