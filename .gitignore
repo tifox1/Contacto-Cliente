@@ -1,15 +1,16 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+Frontend/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+Frontend/coverage
 
 # production
-/build
+Frontend/build
+Backend/Froms_manage/migrations/
 
 # misc
 .DS_Store
@@ -23,3 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 yarn.lock
+
+*.pyc
+node_modules
+node_modules

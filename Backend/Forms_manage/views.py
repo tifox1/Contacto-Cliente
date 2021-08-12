@@ -30,6 +30,9 @@ var_global = {'success': False}
 
 _logger = logging.getLogger(__name__)
 
+def conversor_fecha(dtm):
+    fecha = datetime.strptime(dtm, "%a, %d %b %Y %H:%M:%S %Z")
+    return fecha 
 
 def consulta_odoo():
     resultado = prox.execute_kw(
@@ -182,10 +185,30 @@ def session(request):
 class ListHistory(APIView):
     
     def get(self, request):
-        datos_historial = FormulariosModel.objects.all()
+        print(request.POST)
+        usuario = request.POST.get('usuario')
+        fecha_min = request.POST.get('fechaMin') 
+        fecha_max = request.POST.get('fechaMax') 
+        lista = list()
+        datos_historial = FormulariosModel.objects.filter(salesman_name = 'jose',datetime_sent = (conversor_fecha(fecha_min, fecha_max)))
         for index in datos_historial:
-            print(index.company)
-        return Response()
+            lista.append({
+                'company': index.company,
+                'salesman_name': index.salesman_name,
+                'id_cliente': index.id_cliente,
+                'contact': index.contact,
+                'client_type': index.client_type,
+                'closed_sells': index.closed_sells,
+                'stop_selling': index.stop_selling,
+                'order': index.order,
+                'competition': index.competition,
+                'seller_name': index.seller_name,
+                'product_details': index.product_details,
+                'sample': index.sample,
+                'comment': index.comment,
+            })
+        print(datos_historial)
+        return Response({'resultado': lista})           
 
 
 # def FormulariosView(request):

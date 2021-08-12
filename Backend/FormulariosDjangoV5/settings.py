@@ -27,6 +27,7 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = [
+    '*',
     '192.168.100.190',
     '127.0.0.1',
     '0.0.0.0',
@@ -86,10 +87,10 @@ WSGI_APPLICATION = 'FormulariosDjangoV5.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "A2",
+        'NAME': "postgres",
         "USER":"postgres",
         "PASSWORD":"3142",
-        "HOST":"localhost",
+        "HOST":"db",
         "DATABASE_PORT":"5432",
     }
 }
@@ -151,11 +152,11 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:80",
 ]
 
 
@@ -163,5 +164,14 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.AllowAny',
+    #     'rest_framework.authentication.SessionAuthentication',
+    # ]
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+CSRF_USE_SESSIONS = True

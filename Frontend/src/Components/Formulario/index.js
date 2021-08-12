@@ -43,7 +43,7 @@ const FormView = () => {
         } else {
             history.push('/')
         }
-        fetch('http://192.168.100.190:8000/api/session/', {
+        fetch('/api/session/', {
             method: 'POST',
             body: JSON.stringify(
                 cookies.get('usuario'),
