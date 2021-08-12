@@ -60,7 +60,8 @@ class UsuariosModel(models.Model):
     def __str__(self):
         return self.usuario
  
-
+    def __str__(self):
+        return self.usuario
 
 
 
