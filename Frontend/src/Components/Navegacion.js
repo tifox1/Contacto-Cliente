@@ -1,6 +1,6 @@
 import React from 'react'
 import { AppBar, Box, Button, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core";
-import ExitToApp from '@material-ui/icons/ExitToApp';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Cookies from 'universal-cookie';
 import { Link, useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
@@ -43,13 +43,12 @@ const Navegacion = (props) => {
                     <Typography className={classes.title} variant="h6">
                         {props.title}
                     </Typography>
+                    {props.children}
                     <Button
                         onClick={handleClick}
-                        endIcon={<ExitToApp />}
-                    >{
-                        cookies.get('usuario')
-                            ? cookies.get('usuario').usuario : ''
-                    }</Button>
+                        endIcon={<ExitToAppIcon />}>
+                        {cookies.get('usuario') ? cookies.get('usuario').usuario : ''}
+                    </Button>
                 </Toolbar>
             </AppBar>
         </Box>

@@ -174,7 +174,7 @@ const Formulario = (props) => {
                     error={enviado && formik.errors.cerrasteVenta}
                     errorText={enviado && formik.errors.cerrasteVenta}
                 />
-                <RadioSeleccion title="Compró algún producto de la competencia?"
+                <RadioSeleccion title="¿Compró algún producto de la competencia?"
                     options={[
                         ['Cintas', 'Cintas'],
                         ['FILM', 'FILM'],
