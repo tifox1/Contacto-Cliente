@@ -10,6 +10,7 @@ import {
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import { red } from "@material-ui/core/colors";
+import ListaEnviados from "./Components/ListaEnviados.js";
 
 const theme = createTheme({
     palette: {
@@ -26,6 +27,9 @@ function App() {
                 <Switch>
                     <Route path="/login">
                         <Login />
+                    </Route>
+                    <Route path="/test">
+                        <ListaEnviados />
                     </Route>
                     <Route path="/">
                         <FormView />

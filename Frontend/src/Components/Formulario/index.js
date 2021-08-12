@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Navegacion from '../Navegacion';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -73,7 +74,8 @@ const FormView = () => {
                 </Button>
             </Toolbar>
         </AppBar>
-        <Box marginTop={7} marginBottom={3}>
+        <Navegacion />
+        <Box marginBottom={3}>
             <Formulario clientes={clientes}/>
         </Box>
     </>);
