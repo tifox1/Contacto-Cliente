@@ -24,3 +24,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 class SessionSerializer(serializers.Serializer):
     id_usuario = serializers.IntegerField()
+
+class HistorialSerializer(serializers.Serializer):
+    usuario = serializers.CharField()
+    fecha_min = serializers.CharField()
+    fecha_max = serializers.CharField()
+    
