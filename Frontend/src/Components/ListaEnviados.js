@@ -12,43 +12,58 @@ import Cookies from 'universal-cookie'
 
 const ListaEnviados = () => {
     const cookies = new Cookies()
+    const [items, setItems] = useState([])
+
     const formik = useFormik({
         initialValues: {
             desde: new Date(),
             hasta: new Date()
         },
         onSubmit: (res) => {
+            res.desde.setHours(0, 0)
+            res.hasta.setHours(23, 59)
             fetch('api/historial/', {
                 method: 'POST',
                 body: JSON.stringify({
                     usuario: cookies.get('usuario').usuario,
-                    fechaMin: res.desde.toUTCString(),
-                    fechaMax: res.hasta.toUTCString()
+                    fecha_min: res.desde.toUTCString(),
+                    fecha_max: res.hasta.toUTCString()
                 }),
                 headers: {
                     'Content-Type': 'application/json',
                 },
+            }).then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            }).then(data => {
+                let items = []
+                console.log(data.resultado)
+                data.resultado.forEach(item => {
+                    items.push({
+                        fecha: item.fecha,
+                        cliente: item.id_cliente,
+                        respuestas: [{
+                            company: item.company,
+                            salesman_name: item.salesman_name,
+                            contact: item.contact,
+                            client_type: item.client_type,
+                            closed_sells: item.closed_sells,
+                            stop_selling: item.stop_selling,
+                            order: item.order,
+                            competition: item.competition,
+                            seller_name: item.seller_name,
+                            product_details: item.product_details,
+                            sample: item.sample,
+                            comment: item.comment,
+                        }]
+                    })
+                })
+                setItems(items)
             })
         }
     })
 
-    const [items] = useState([
-        {fecha: '23/06/21', cliente: 'test', respuestas: [{
-            company: 'test', 
-            salesman_name: 'test',
-            id_cliente: 'test',
-            contact: 'test',
-            client_type: 'test',
-            closed_sells: 'test',
-            stop_selling: 'test',
-            order: 'test',
-            competition: 'test',
-            seller_name: 'test',
-            product_details: 'test',
-            sample: 'test',
-            comment: 'test',
-        }]}
-    ])
 
     return (<>
         <Navegacion back="/" title="Gestiones realizadas" />

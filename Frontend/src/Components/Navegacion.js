@@ -1,5 +1,13 @@
 import React from 'react'
-import { AppBar, Box, Button, IconButton, makeStyles, Toolbar, Typography } from "@material-ui/core";
+import {
+    AppBar,
+    Box,
+    Button,
+    IconButton,
+    makeStyles,
+    Toolbar,
+    Typography
+} from "@material-ui/core";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Cookies from 'universal-cookie';
 import { Link, useHistory } from 'react-router-dom';
@@ -46,9 +54,10 @@ const Navegacion = (props) => {
                     {props.children}
                     <Button
                         onClick={handleClick}
-                        endIcon={<ExitToAppIcon />}>
-                        {cookies.get('usuario') ? cookies.get('usuario').usuario : ''}
-                    </Button>
+                        endIcon={<ExitToAppIcon />}>{
+                            cookies.get('usuario')
+                                ? cookies.get('usuario').usuario : ''
+                    }</Button>
                 </Toolbar>
             </AppBar>
         </Box>

@@ -49,12 +49,11 @@ const ItemDesp = (props) => {
                     >
                         {props.item.respuestas.map(respuesta => {
                             return (titulos.map(titulo => {
-                                console.log(respuesta[titulo[0]])
                                 return (<>
-                                    <ListItem>
+                                    <ListItem key={titulos.indexOf(titulo)}>
                                         <ListItemText
                                             primary={titulo[1]}
-                                            secondary={`${respuesta[titulo[0]]} ${titulos.indexOf(titulo)}`}
+                                            secondary={respuesta[titulo[0]]}
                                         />
                                     </ListItem>
                                 </>)

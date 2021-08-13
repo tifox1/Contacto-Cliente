@@ -9,7 +9,7 @@ Frontend/node_modules
 Frontend/coverage
 
 # production
-Frontend/build
+# Frontend/build
 Backend/Froms_manage/migrations/
 
 # misc
