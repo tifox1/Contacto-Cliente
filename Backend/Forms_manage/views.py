@@ -1,15 +1,15 @@
-
-from datetime import datetime
+from dateutil import parser
+from datetime import datetime, timezone
 from django.http import request
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 
-
+from rest_framework.views import APIView
 from xmlrpc import client
 from Forms_manage.models import FormulariosModel, UsuariosModel
-from .serializers import UsuarioSerializer, FormularioSerializer, SessionSerializer
+from .serializers import UsuarioSerializer, FormularioSerializer, SessionSerializer, HistorialSerializer
 
 import logging
 
@@ -29,6 +29,12 @@ prox = client.ServerProxy('http://%s:%s/xmlrpc/2/object' % (srv, port))
 var_global = {'success': False}
 
 _logger = logging.getLogger(__name__)
+
+
+def conversor_fecha(dtm):
+    # fecha = datetime.strptime(dtm, "%a, %d %b %Y %H:%M:%S %Z")
+    fecha = parser.parse(dtm)
+    return fecha
 
 
 def consulta_odoo():
@@ -80,7 +86,7 @@ def login(request):
         datos = UsuarioSerializer(data=request.data)
 
         if datos.is_valid():
-            
+
             usuario_query = UsuariosModel.objects.filter(
                 usuario=datos.data['usuario'], contrasenia=datos.data['contrasenia'])
             # response = exception_handler()
@@ -90,7 +96,7 @@ def login(request):
             if usuario_query.exists():
 
                 for i in contenido_odoo:
-                    
+
                     if str(datos.data['usuario']) == str(i.get('login')):
                         usuario = datos.data['usuario']
                         id_usuario = i.get('id')
@@ -134,7 +140,7 @@ def formulario(request):
             if datos.data['seller_name'] == 'other':
                 my_model.seller_name = datos.data['other_seller']
                 seller = datos.data['other_seller']
-                
+
             else:
                 my_model.seller_name = datos.data['seller_name']
                 seller = datos.data['seller_name']
@@ -178,6 +184,75 @@ def session(request):
         leer_odoo(usuario=id_usuario)
         resultado = seleccion_odoo(id_usuario)
     return Response(resultado)
+
+
+@api_view(['POST', 'GET'])
+def historial(request):
+    lista = list()
+    datos = HistorialSerializer(data=request.data)
+    if datos.is_valid():
+        print(datetime.strptime(datos.data['fecha_min'], "%a, %d %b %Y %H:%M:%S %Z"))
+
+        datos_historial = FormulariosModel.objects.filter(
+            salesman_name=datos.data['usuario'], 
+            datetime_sent__range= (
+                datetime.strptime(datos.data['fecha_min'], "%a, %d %b %Y %H:%M:%S %Z"), 
+                datetime.strptime(datos.data['fecha_max'], "%a, %d %b %Y %H:%M:%S %Z")
+            )
+        )
+        print(datos_historial)
+        for index in datos_historial:
+                lista.append({
+                    'company': index.company,
+                    'salesman_name': index.salesman_name,
+                    'id_cliente': index.id_cliente,
+                    'contact': index.contact,
+                    'client_type': index.client_type,
+                    'closed_sells': index.closed_sells,
+                    'stop_selling': index.stop_selling,
+                    'order': index.order,
+                    'competition': index.competition,
+                    'seller_name': index.seller_name,
+                    'product_details': index.product_details,
+                    'sample': index.sample,
+                    'comment': index.comment,
+                    'fecha': datetime.strftime(index.datetime_sent, '%d/%m/%Y')
+                })
+            # print(datos_historial)
+        return Response({'resultado': lista})
+
+    return Response(status=405)
+
+
+# class ListHistory(APIView):
+
+#     def post(self, request):
+#         # print('ESTA ES LA PETICION',request.data)
+#         usuario = request.data['usuario']
+#         fecha_min = request.data['fechaMin']
+#         fecha_max = request.data['fechaMax']
+#         print(fecha_min)
+#         print(type(fecha_max))
+#         lista = list()
+#         datos_historial = FormulariosModel.objects.filter(salesman_name = usuario, datetime_sent = (parser.isoparse(fecha_min), parser.isoparse(fecha_max)))
+#         for index in datos_historial:
+#             lista.append({
+#                 'company': index.company,
+#                 'salesman_name': index.salesman_name,
+#                 'id_cliente': index.id_cliente,
+#                 'contact': index.contact,
+#                 'client_type': index.client_type,
+#                 'closed_sells': index.closed_sells,
+#                 'stop_selling': index.stop_selling,
+#                 'order': index.order,
+#                 'competition': index.competition,
+#                 'seller_name': index.seller_name,
+#                 'product_details': index.product_details,
+#                 'sample': index.sample,
+#                 'comment': index.comment,
+#             })
+#         # print(datos_historial)
+#         return Response({'resultado': lista})
 
 
 # def FormulariosView(request):
