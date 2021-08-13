@@ -87,9 +87,9 @@ WSGI_APPLICATION = 'FormulariosDjangoV5.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "",
+        'NAME': "postgres",
         "USER":"postgres",
-        "PASSWORD":"",
+        "PASSWORD":"3142",
         "HOST":"db",
         "DATABASE_PORT":"5432",
     }
