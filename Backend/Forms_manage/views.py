@@ -8,7 +8,6 @@ from rest_framework.response import Response
 
 
 from xmlrpc import client
-from Forms_manage.forms import FormulariosForm, SelectForm, LoginForm
 from Forms_manage.models import FormulariosModel, UsuariosModel
 from .serializers import UsuarioSerializer, FormularioSerializer, SessionSerializer
 
@@ -16,9 +15,9 @@ import logging
 
 # Credenciales servidor
 #   TODO: poner las variables en un archivo de configuración aparte (archivo .ini)
-srv = '192.168.100.47'  # Ruta del servidor
-port = '8787'  # Puerto servidor
-db_odoo = '0130'  # Nombre base de datos odoo
+srv = '192.168.100.132'  # Ruta del servidor
+port = '90'  # Puerto servidor
+db_odoo = 'segcintra_dev'  # Nombre base de datos odoo
 user = 'facturacionsegupak'
 password = '12345'
 
