@@ -37,6 +37,19 @@ def conversor_fecha(dtm):
     return fecha
 
 
+def consulta():
+    user = 'facturacioncintas'
+    password = '12345'
+    uid = common.authenticate(db_odoo, user, password, {})
+    resultado = prox.execute_kw(
+        db_odoo, uid, password,
+        'res.users',
+        'search_read',  # Buscar y leer
+            [[]],  # Condición
+        {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
+    )
+    return resultado
+
 def consulta_odoo():
     resultado = prox.execute_kw(
         db_odoo, uid, password,
@@ -46,16 +59,7 @@ def consulta_odoo():
         {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
     )
     if not resultado:
-        user = 'facturacioncintas'
-        password = '12345'
-        uid = common.authenticate(db_odoo, user, password, {})
-        resultado = prox.execute_kw(
-            db_odoo, uid, password,
-            'res.users',
-            'search_read',  # Buscar y leer
-            [[]],  # Condición
-            {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
-    )
+        resultado = consulta()
     return resultado
 
 
