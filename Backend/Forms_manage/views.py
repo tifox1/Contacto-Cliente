@@ -45,6 +45,17 @@ def consulta_odoo():
         [[]],  # Condición
         {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
     )
+    if not resultado:
+        user = 'facturacioncintas'
+        password = '12345'
+        uid = common.authenticate(db_odoo, user, password, {})
+        resultado = prox.execute_kw(
+            db_odoo, uid, password,
+            'res.users',
+            'search_read',  # Buscar y leer
+            [[]],  # Condición
+            {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
+    )
     return resultado
 
 
