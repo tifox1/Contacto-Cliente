@@ -18,7 +18,7 @@ import logging
 srv = '192.168.100.47'  # Ruta del servidor
 port = '443'  # Puerto servidor
 db_odoo = '0130'  # Nombre base de datos odoo
-user = 'facturacionsegupak'
+user = 'facturacioncintas'
 password = '12345'
 
 # XMLRPC
