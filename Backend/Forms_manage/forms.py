@@ -114,8 +114,21 @@ class SelectForm(forms.Form):
         self.leer = self.leer_odoo()
         super().__init__(*args, **kwargs)
         self.fields['seleccion9'].widget.choices = self.seleccion_odoo()
-        print(self.seleccion_odoo)
+        # print(self.seleccion_odoo)
         # self.fields['seleccion9'].widget.choices = self.fields['seleccion9'].widget.choices.order_by('name')
+
+    def leer_cintas(self):
+        user = 'facturacioncintas'
+        password = '12345'
+        uid = common.authenticate(db_odoo, user, password, {})
+        contenido_odoo = prox.execute_kw(
+            db_odoo, uid, password,
+            'res.partner',
+            'search_read', # Buscar y leer
+            [[['salesman_actual', '=', self.usuario], ['is_company', '=', True]]], # Condición
+            {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
+        )
+        return contenido_odoo
 
     #trae los registros de la base de datos
     def leer_odoo(self):
@@ -124,7 +137,7 @@ class SelectForm(forms.Form):
             db_odoo, uid, password,
             'res.partner',
             'search_read', # Buscar y leer
-            [[['salesman_actual', '=', self.usuario], ['company_type', '=', 'company']]], # Condición
+            [[['salesman_actual', '=', self.usuario], ['is_company', '=', True]]], # Condición
             {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
         )
         return contenido_odoo

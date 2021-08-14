@@ -37,7 +37,7 @@ def conversor_fecha(dtm):
     return fecha
 
 
-def consulta():
+def consulta_cintas():
     user = 'facturacioncintas'
     password = '12345'
     uid = common.authenticate(db_odoo, user, password, {})
@@ -58,19 +58,30 @@ def consulta_odoo():
         [[]],  # Condición
         {'fields': ['login', 'id', 'company_id'], }  # Campos que va a traer
     )
-    if not resultado:
-        resultado = consulta()
+
     return resultado
 
-
-def leer_odoo(usuario):
-
+def leer_cintas(usuario):
+    user = 'facturacioncintas'
+    password = '12345'
+    uid = common.authenticate(db_odoo, user, password, {})
     contenido_odoo = prox.execute_kw(
         db_odoo, uid, password,
         'res.partner',
         'search_read',  # Buscar y leer
         [[['salesman_actual', '=', usuario], [
-            'company_type', '=', 'company']]],  # Condición
+            'is_company', '=', True]]],  # Condición
+        {'fields': ['name', 'id'], 'order': 'name'}  # Campos que va a traer
+    )
+    return contenido_odoo
+
+def leer_odoo(usuario):
+    contenido_odoo = prox.execute_kw(
+        db_odoo, uid, password,
+        'res.partner',
+        'search_read',  # Buscar y leer
+        [[['salesman_actual', '=', usuario], [
+            'is_company', '=', True]]],  # Condición
         {'fields': ['name', 'id'], 'order': 'name'}  # Campos que va a traer
     )
     return contenido_odoo
@@ -80,6 +91,10 @@ def leer_odoo(usuario):
 
 def seleccion_odoo(usuario):
     datos_odoo = leer_odoo(usuario)
+    #si no encuentra datos busca en cintas
+    print(datos_odoo)
+    if not datos_odoo:
+        datos_odoo = leer_cintas(usuario)
     seleccion_clientes = list()
     # diccionario_resultado = dict()
     resultado = None
@@ -107,6 +122,7 @@ def login(request):
             # response = exception_handler()
 
             contenido_odoo = consulta_odoo()
+            contenido_odoo2 = consulta_cintas()
             # print(contenido_odoo)
             if usuario_query.exists():
 
@@ -118,7 +134,40 @@ def login(request):
                         company = i.get('company_id')[1]
 
                         return Response({'usuario': usuario, 'id_usuario': id_usuario, 'company': company})
+
+                for i in contenido_odoo2:
+
+                    if str(datos.data['usuario']) == str(i.get('login')):
+                        usuario = datos.data['usuario']
+                        id_usuario = i.get('id')
+                        company = i.get('company_id')[1]
+
+                        return Response({'usuario': usuario, 'id_usuario': id_usuario, 'company': company})
     return Response(status=405)
+
+# para enviar a cintas
+def form_cintas():
+    user = 'facturacioncintas'
+    password = '12345'
+    uid = common.authenticate(db_odoo, user, password, {})
+    prox.execute_kw(db_odoo, uid, password,  # Credenciales
+        'contacto.cliente',  # Modelo odoo
+        'create', [{  # Crear: [{campos del modelo a crear}]
+            'contact': datos.data['contact'],
+            'client_type': datos.data['client_type'],
+            'stop_selling': datos.data['stop_selling'],
+            'order': datos.data['order'],
+            'seller_name': seller,
+            'competition': competition,
+            'product_details': datos.data['product_details'],
+            'sample': datos.data['sample'],
+            'comment': datos.data['comment'],
+            'partner_name': datos.data['id_cliente'],
+            'cerraste_venta': datos.data['closed_sells'],
+            'salesman_name': datos.data['salesman_name'],
+            'fecha_hora': datetime.utcnow()
+            }]
+        )
 
 
 @api_view(['POST'])
@@ -130,7 +179,6 @@ def formulario(request):
         datos = FormularioSerializer(data=request.data)
         print(datos.is_valid())
         if datos.is_valid():
-            print(type(datos.data['client_type']))
             my_model.contact = datos.data['contact']
             my_model.client_type = datos.data['client_type']
             my_model.stop_selling = datos.data['stop_selling']
@@ -162,8 +210,7 @@ def formulario(request):
 
             my_model.save()
             print(datos.data)
-
-            prox.execute_kw(
+            if prox.execute_kw(
                 db_odoo, uid, password,  # Credenciales
                 'contacto.cliente',  # Modelo odoo
                 'create', [{  # Crear: [{campos del modelo a crear}]
@@ -182,9 +229,11 @@ def formulario(request):
                     # 'partner_id': int(request.session['id']),
                     # 'fecha_hora' : pytz.utc.localize(datetime.utcnow()).astimezone(pytz.timezone('America/Asuncion'))
                     'fecha_hora': datetime.utcnow()
-                }]
-            )
-
+                }]):
+                    pass
+            else:
+                #si no graba, envia a cintas
+                form_cintas()
         else:
             print(datos.errors)
     return Response()
