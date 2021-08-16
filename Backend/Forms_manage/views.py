@@ -69,7 +69,7 @@ def leer_cintas(usuario):
         db_odoo, uid, password,
         'res.partner',
         'search_read',  # Buscar y leer
-        [[['salesman_actual', '=', usuario], [
+        [[['user_id', '=', usuario], [
             'is_company', '=', True]]],  # Condición
         {'fields': ['name', 'id'], 'order': 'name'}  # Campos que va a traer
     )

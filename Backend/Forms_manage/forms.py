@@ -125,7 +125,7 @@ class SelectForm(forms.Form):
             db_odoo, uid, password,
             'res.partner',
             'search_read', # Buscar y leer
-            [[['salesman_actual', '=', self.usuario], ['is_company', '=', True]]], # Condición
+            [[['user_id', '=', self.usuario], ['is_company', '=', True]]], # Condición
             {'fields': ['name', 'id'], 'order' : 'name'} # Campos que va a traer
         )
         return contenido_odoo
