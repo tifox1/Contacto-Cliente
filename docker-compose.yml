@@ -15,6 +15,9 @@ services:
         formulario:
   web:
     build: ./Backend/
+    # command: "gunicorn FormulariosDjangoV5.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers=3 --threads=3 --worker-connections=1000"
+    command: bash -c  "python manage.py runserver 0.0.0.0:8000 &&
+                      gunicorn FormulariosDjangoV5.wsgi:application --bind 0.0.0.0:8005 --timeout 120 --workers=3 --threads=3 --worker-connections=1000"
     volumes:
       - ./Backend:/code
     ports:
@@ -48,6 +51,7 @@ services:
     restart: always
     networks:
         formulario:
+
 
 networks:
   formulario:
